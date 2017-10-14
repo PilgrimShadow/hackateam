@@ -20,8 +20,8 @@ POST        /logout                         controllers.Application.logout()
 # The ToDo page
 GET         /todo                           controllers.Application.todo()
 
-# The Journal page
-GET         /journal                        controllers.Application.journal()
+# Search for other users
+GET         /userSearch                     controllers.Application.userSearch()
 
 # The Settings page
 GET         /settings                       controllers.Application.settings()
