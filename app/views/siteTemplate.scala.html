@@ -1,0 +1,13 @@
+@(pageTitle: String)(bodyContent: Html)
+
+
+@siteCore(pageTitle)(headContent = Html("")) {
+
+        <!-- Links to other pages on the site-->
+    <ul class="nav navbar-nav navbar-right collapse navbar-collapse" id="studylab-menu">
+        <li><a href="@routes.Application.signup()" hreflang="en">Signup</a></li>
+        <li><a href="@routes.Application.loginPage()" hreflang="en">Login</a></li>
+    </ul>
+} {
+    @bodyContent
+}

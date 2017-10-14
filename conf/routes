@@ -1,0 +1,102 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                               controllers.Application.home()
+
+# The Sign-Up page for new users
+GET         /signup                         controllers.Application.signup()
+
+# The Login page for existing users
+GET         /login                          controllers.Application.loginPage()
+
+# Log in a user
+POST        /login                          controllers.Users.login()
+
+# Logout of the current session
+POST        /logout                         controllers.Application.logout()
+
+# The ToDo page
+GET         /todo                           controllers.Application.todo()
+
+# The Journal page
+GET         /journal                        controllers.Application.journal()
+
+# The Settings page
+GET         /settings                       controllers.Application.settings()
+
+# The About page for Study Lab
+GET         /about                          controllers.Application.about()
+
+# The Contact page for Study Lab
+GET         /contact                        controllers.Application.contact()
+
+# The Help page for Study Lab
+GET         /help                           controllers.Application.help()
+
+# Get sessions as JSON for the username
+GET         /json/sessions/:username        controllers.Sessions.sessionsForUsername(username: String)
+
+# Get the user's status as JSON
+GET         /json/status/:username          controllers.Sessions.userStatus(username: String)
+
+# Get the about message as JSON for the username
+GET         /json/about/:username           controllers.Users.aboutMessage(username: String)
+
+# Get the journal entries as JSON for the username
+GET         /json/journal/                  controllers.JournalEntries.getJournalEntries()
+
+# Start a study session
+POST        /study/start                    controllers.Sessions.startSession()
+
+# Stop a study session
+POST        /study/stop                     controllers.Sessions.stopSession()
+
+# Abort a study session
+POST        /study/cancel                   controllers.Sessions.cancelSession()
+
+# Add a study subject
+POST        /study/add                      controllers.Sessions.addSkill()
+
+# Remove a study subject
+POST        /study/remove                   controllers.Sessions.removeSkill()
+
+# Rename a study subject
+POST        /study/rename                   controllers.Sessions.renameSubject()
+
+# Merge one subject into another
+POST        /study/merge                    controllers.Sessions.mergeSubjects()
+
+# Add a journal entry
+POST        /journal/add                    controllers.JournalEntries.addJournalEntry()
+
+# Add a new user
+POST        /users/add                      controllers.Users.addNewUser()
+
+# Update a user's email address
+POST        /users/updateEmail              controllers.Users.updateEmail()
+
+# Update a user's password
+POST        /users/updatePassword           controllers.Users.updatePassword()
+
+# Remove a user
+POST        /users/delete                   controllers.Users.deleteUser()
+
+# Add a todo item
+POST        /todo/addTodoItem               controllers.Todo.addTodoItem()
+
+# Delete a todo item
+POST        /todo/deleteTodoItem            controllers.Todo.deleteTodoItem()
+
+# Complete a todo item
+POST        /todo/completeTodoItem          controllers.Todo.completeTodoItem()
+
+# Get the todo items for a user
+GET         /todo/getTodoItems              controllers.Todo.getTodoItems()
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                   controllers.Assets.at(path="/public", file)
+
+# A root-level link to the favicon
+GET         /favicon.ico                    controllers.Default.redirect(to = "/assets/images/favicon.ico")

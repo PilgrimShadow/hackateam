@@ -1,0 +1,407 @@
+html {
+    /* Sticky footer */
+    height: 100%;
+}
+
+body {
+    font-family: Roboto, "Open Sans", Helvetica, Arial, sans-serif;
+    background-color: #393939;
+    color: #E0E0E3;
+    padding-top: 80px;
+
+    /* Sticky footer */
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+}
+
+.page-content {
+    /* Sticky footer */
+    flex: 1;
+    padding: 0 15px;
+}
+
+.control-panel-element {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: solid gray 2px;
+    border-radius: 5px;
+}
+
+.control-panel-label {
+    width: 100%;
+}
+
+.control-panel-caret {
+    margin-left: 4px;
+}
+
+#highlight-stats {
+    width: 100%;
+    text-align: center;
+}
+
+#highlight-stats col {
+    width: 33.3%;
+}
+
+#highlight-stats th {
+    text-align: center;
+}
+
+.entry-form {
+    width: 300px;
+    margin: auto;
+    margin-top: 200px;
+    padding: 10px;
+    border: solid gray 2px;
+    border-radius: 5px;
+}
+
+.subject-list-element {
+    width: 100%;
+    font-size: large;
+}
+
+.subject-list-name {
+    font-size: x-large;
+}
+
+.subject-list-total {
+    margin-left: 5px;
+    font-size: medium;
+    color: #707073;
+}
+
+.subject-list-description {
+    font-size: medium;
+    color: #707073;
+}
+
+.subject-list-options {
+    display: inline-block;
+    float: right;
+    color: #707073;
+    text-align: right;
+}
+
+#dashboard-content {
+    min-width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+#summary-content {
+    flex: 1 100%;
+}
+
+#study-control {
+    flex: 1 100%;
+}
+
+#study-start-button {
+    border: 0;
+    color: #fff;
+    background-color: #4b4;
+}
+
+#study-stop-button {
+    border: 0;
+    color: #fff;
+    background-color: #b44;
+}
+
+.study-control-button {
+    width: 100%;
+}
+
+.study-control-input {
+    width: 100%;
+}
+
+.study-control-form {
+    margin: 10px 0;
+}
+
+#study-clock {
+    text-align: center;
+    font-size: xx-large;
+    color: rgba(255, 255, 255, .4);
+}
+
+.clock-separator {
+    color: rgba(255, 255, 255, .4);
+}
+
+.clock-active-digit {
+    color: #78a4ff;
+}
+
+.introMessageValue {
+    font-weight: bold;
+    color: rgb(58, 127, 89);
+}
+
+.introMessageText {
+    color: #707073
+}
+
+#widt-highchart {
+    border-top: solid #707073 2px;
+    border-bottom: solid #707073 2px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    border-radius: 0;
+    font-size: medium;
+    box-shadow: 0 2px 3px #242424;
+}
+
+.navbar-nav {
+    color: #f9f9fd;
+}
+
+.navbar-nav > li:hover {
+    color: #fff;
+}
+
+.raised-element {
+    background-color: transparent;
+}
+
+.padded-plot {
+    padding: 25px 0;
+}
+
+.profile-link-row {
+    margin: 20px;
+}
+
+.center-text-content {
+    padding: 20px;
+    margin-bottom: 40px;
+}
+
+/* Styling the footer */
+
+footer {
+    /* Ensure that the footer stretches the entire page width */
+    align-self: stretch;
+
+    /* The footer content is organized with flex */
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    color: #8f8f8f;
+    background: #333;
+    box-shadow: 0 -2px 3px #242424;
+    font-size: medium;
+    height: 50px;
+    padding: 0 10px;
+}
+
+#footer-copyright {
+    flex: 1;
+    text-align: right;
+}
+
+.footer-link {
+    text-align: center;
+    margin: 0 10px;
+}
+
+.footer-link a {
+    color: #8f8f8f;
+}
+
+/* End footer styling */
+
+.small-margin-bottom {
+    margin-bottom: 30px;
+}
+
+.loading-icon {
+    text-align: center;
+}
+
+/* X-Small Screens */
+.panel-data-block {
+    font-size: xx-large;
+    text-align: center;
+}
+
+.data-block-title {
+    font-size: large;
+}
+
+.partial-border {
+    border-bottom: solid 2px #707073;
+}
+
+#about-para {
+    font-size: x-large;
+    margin-bottom: 80px;
+}
+
+.chart-container {
+    height: 350px;
+}
+
+/* CSS for loading animation */
+
+@keyframes blink {
+
+    0% {
+        opacity: .2;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: .2;
+    }
+}
+
+.loading-dots span {
+
+    font-size: small;
+
+    margin: 0 5px;
+
+    animation-name: blink;
+
+    animation-duration: 1.4s;
+
+    animation-iteration-count: infinite;
+
+    animation-fill-mode: both;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+.loading-dots span:nth-child(4) {
+    animation-delay: .6s;
+}
+
+/*- - - - - - - - - - - - - - */
+
+/* Small Screens */
+@media (min-width: 768px) {
+
+    .chart-container {
+        height: 500px;
+    }
+
+    .quote {
+        margin-bottom: 50px;
+        font-size: xx-large;
+    }
+
+    .quote-attribution {
+        margin-top: 7px;
+        font-size: x-large;
+    }
+
+    #about-para {
+        font-size: xx-large;
+    }
+
+    .partial-border {
+        border-left: solid 2px #707073;
+    }
+
+    .panel-data-block {
+        font-size: large;
+    }
+
+    .data-block-title {
+        font-size: small;
+    }
+
+    #summary-content {
+        flex: 3;
+        padding-left: 15px;
+    }
+
+    #study-control {
+        flex: 1;
+    }
+
+    #study-clock {
+        font-size: 3vw;
+    }
+
+}
+
+/* Medium Screens */
+@media (min-width: 992px) {
+
+    .panel-data-block {
+        font-size: x-large;
+    }
+
+    .data-block-title {
+        font-size: medium;
+    }
+
+}
+
+/* Large Screens */
+@media (min-width: 1200px) {
+
+    .loading-dots span {
+        font-size: medium;
+    }
+
+    .panel-data-block {
+        font-size: xx-large;
+    }
+
+    .data-block-title {
+        font-size: large;
+    }
+
+    .footer-link {
+        margin: 0 20px;
+    }
+
+    #widt-highchart {
+        padding: 25px 0;
+    }
+
+    #summary-content {
+        padding: 0 0 50px 50px;
+    }
+
+}
+
+/* X-Large Screens */
+@media (min-width: 1800px) {
+
+    .chart-container {
+        height: 700px;
+    }
+
+    .panel-data-block {
+        font-size: 2vw;
+    }
+
+    .data-block-title {
+        font-size: 1vw;
+    }
+
+    #summary-content {
+        padding: 0 50px 50px 100px;
+    }
+}
