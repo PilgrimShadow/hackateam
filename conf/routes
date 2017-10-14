@@ -18,7 +18,7 @@ POST        /login                          controllers.Users.login()
 POST        /logout                         controllers.Application.logout()
 
 # The ToDo page
-GET         /todo                           controllers.Application.todo()
+GET         /teamSearch                     controllers.Application.teamSearch()
 
 # Search for other users
 GET         /userSearch                     controllers.Application.userSearch()
@@ -89,17 +89,20 @@ POST        /users/updatePassword           controllers.Users.updatePassword()
 # Remove a user
 POST        /users/delete                   controllers.Users.deleteUser()
 
-# Add a todo item
-POST        /todo/addTodoItem               controllers.Todo.addTodoItem()
+# Add a team
+POST        /teams/add                      controllers.Teams.addTeam()
 
 # Delete a todo item
-POST        /todo/deleteTodoItem            controllers.Todo.deleteTodoItem()
+POST        /todo/deleteTodoItem            controllers.Teams.deleteTeam()
 
 # Complete a todo item
-POST        /todo/completeTodoItem          controllers.Todo.completeTodoItem()
+POST        /todo/completeTodoItem          controllers.Teams.completeTodoItem()
 
-# Get the todo items for a user
-GET         /todo/getTodoItems              controllers.Todo.getTodoItems()
+# Get all teams
+GET         /teams/get                      controllers.Teams.getTeams()
+
+# Get teams for the user
+GET         /teams/myTeams                  controllers.Teams.getTeamsForUsername()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                   controllers.Assets.at(path="/public", file)

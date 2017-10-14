@@ -1,7 +1,7 @@
 'use strict';
 
 // Handler for customized form submission
-function submitInBackground(formSelector, submitURL, successCallback, extraData = []) {
+function submitInBackground(formSelector, submitURL, successCallback = () => null, extraData = []) {
     $(formSelector).submit(function (e) {
 
         // Prevent the form from clearing

@@ -1,0 +1,78 @@
+@(username: String)(implicit messages: Messages)
+
+@loggedInTemplate("Todo") {
+    <link href="@routes.Assets.at("stylesheets/journal.css")" rel="stylesheet" type="text/css">
+} {
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+
+                <form id="team-search-form" class="search-form">
+                    <label for="team-skill-search" class="sr-only">Search</label>
+                    <input type="text" name="search-text" id="team-skill-search" class="form-control text-search-input" placeholder="search for skills...">
+
+                    <label for="team-description-search" class="sr-only">Search</label>
+                    <input type="text" name="search-text" id="team-description-search" class="form-control text-search-input" placeholder="search descriptions...">
+                </form>
+
+                <div id="team-search-result"></div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Moment JS -->
+    <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
+    <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
+
+        <!-- Custom JS -->
+    <script src="@routes.Assets.at("/javascripts/TeamList.js")"></script>
+    <script src="@routes.Assets.at("/javascripts/FormHandlers.js")"></script>
+
+    <script>
+
+            'use strict';
+
+            // Set up handlers and initialize page
+            $(function () {
+
+                $.ajax({
+                    type: "get",
+                    url: "@routes.Teams.getTeams()",
+                    dataType: "json",
+                    success: function (responseData, textResponse, jqXHR) {
+
+                        console.log(responseData);
+
+                        if (responseData['success'] === true) {
+
+                            let teamList = new TeamList("team-search-result", responseData['payload']);
+
+                            teamList.display();
+
+                            let t = $('team-skill-search');
+
+                            // Set up the handler for the journal search bar
+                            t.keyup(function () {
+
+                                teamList.skillSearch(t.val());
+                                teamList.display();
+                            });
+
+                            let s = $('#team-description-search');
+
+                            s.keyup(function () {
+
+                                teamList.descriptionSearch(s.val());
+                                teamList.display();
+                            });
+                        } else {
+                            console.log("There was an problem loading your journal entries")
+                        }
+                    }
+                });
+            });
+
+    </script>
+
+}

@@ -1,79 +1,77 @@
 @(username: String)(implicit messages: Messages)
 
-@loggedInTemplate("User Search") {
-    <link href="@routes.Assets.at("stylesheets/journal.css")" rel="stylesheet" type="text/css">
-} {
+    @loggedInTemplate("User Search") {
+        <link href="@routes.Assets.at("stylesheets/journal.css")" rel="stylesheet" type="text/css">
+    } {
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-8 col-sm-offset-2">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
 
-                <form id="user-search-form">
-                    <label for="user-skill-search" class="sr-only">Search</label>
-                    <input type="text" name="search-text" id="user-skill-search" class="form-control user-text-search" placeholder="search for skills...">
+                    <form id="user-search-form" class="search-form">
+                        <label for="user-skill-search" class="sr-only">Search</label>
+                        <input type="text" name="search-text" id="user-skill-search" class="form-control text-search-input" placeholder="search for skills...">
 
-                    <label for="user-about-search" class="sr-only">Search</label>
-                    <input type="text" name="search-text" id="user-about-search" class="form-control user-text-search" placeholder="search descriptions...">
-                </form>
+                        <label for="user-about-search" class="sr-only">Search</label>
+                        <input type="text" name="search-text" id="user-about-search" class="form-control text-search-input" placeholder="search descriptions...">
+                    </form>
 
-                <div id="past-journal-entries">
-
+                    <div id="user-search-result"></div>
                 </div>
             </div>
         </div>
-    </div>
 
 
-        <!-- Moment JS -->
-    <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
-    <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
+            <!-- Moment JS -->
+        <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
+        <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
 
-    <script src="@routes.Assets.at("/javascripts/UserList.js")"></script>
-    <script src="@routes.Assets.at("/javascripts/FormHandlers.js")"></script>
+        <script src="@routes.Assets.at("/javascripts/UserList.js")"></script>
+        <script src="@routes.Assets.at("/javascripts/FormHandlers.js")"></script>
 
-    <script>
-            'use strict';
+        <script>
+                'use strict';
 
-            // Set up handlers and load journal entries
-            $(function () {
+                // Set up handlers and load journal entries
+                $(function () {
 
-                let searchText = $('#user-skill-search');
+                    let searchText = $('#user-skill-search');
 
-                $.ajax({
-                    type: "get",
-                    url: "@routes.Users.getUsers()",
-                    dataType: "json",
-                    success: function (responseData, textResponse, jqXHR) {
+                    $.ajax({
+                        type: "get",
+                        url: "@routes.Users.getUsers()",
+                        dataType: "json",
+                        success: function (responseData, textResponse, jqXHR) {
 
-                        console.log(responseData);
+                            console.log(responseData);
 
-                        if (responseData['success'] === true) {
+                            if (responseData['success'] === true) {
 
-                            let userList = new UserList("past-journal-entries", responseData['payload']);
+                                let userList = new UserList("user-search-result", responseData['payload']);
 
-                            //userList.sort();
-                            userList.display();
-
-                            // Set up the handler for the journal search bar
-                            searchText.keyup(function () {
-
-                                userList.skillSearch(searchText.val());
+                                //userList.sort();
                                 userList.display();
-                            });
 
-                            let s = $('#user-about-search');
+                                // Set up the handler for the journal search bar
+                                searchText.keyup(function () {
 
-                            s.keyup(function () {
+                                    userList.skillSearch(searchText.val());
+                                    userList.display();
+                                });
 
-                                userList.aboutSearch(s.val());
-                                userList.display();
-                            });
+                                let s = $('#user-about-search');
 
-                        } else {
-                            console.log("There was a problem loading your journal entries")
+                                s.keyup(function () {
+
+                                    userList.aboutSearch(s.val());
+                                    userList.display();
+                                });
+
+                            } else {
+                                console.log("There was a problem loading your journal entries")
+                            }
                         }
-                    }
+                    });
                 });
-            });
-    </script>
-}
+        </script>
+    }

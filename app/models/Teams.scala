@@ -17,7 +17,7 @@ import play.modules.reactivemongo.json._
 import reactivemongo.api.collections.bson.BSONCollection
 
 // Project
-import constructs.{ResultInfo, TodoItem}
+import constructs.{ResultInfo, Team}
 import helpers.Selectors.usernameAndID
 
 /**
@@ -25,21 +25,20 @@ import helpers.Selectors.usernameAndID
   *
   * @param mongoApi
   */
-class Todo(protected val mongoApi: ReactiveMongoApi) {
+class Teams(protected val mongoApi: ReactiveMongoApi) {
 
-  protected def todoCollection: Future[BSONCollection] = mongoApi.database.map(_.collection("todo_items"))
+  protected def teamBSON: Future[BSONCollection] = mongoApi.database.map(_.collection("teams"))
 
-  protected def todoJSON: Future[JSONCollection] = mongoApi.database.map(_.collection("todo_items"))
+  protected def teamJSON: Future[JSONCollection] = mongoApi.database.map(_.collection("teams"))
 
   /**
     *
-    * @param username The username for which to add the goal
     * @param item
     * @return
     */
-  def addTodoItem(username: String, item: TodoItem): Future[ResultInfo[String]] = {
+  def addTeam(item: Team): Future[ResultInfo[String]] = {
 
-    todoCollection.flatMap(_.insert(item)).map(
+    teamBSON.flatMap(_.insert(item)).map(
       result =>
         if (result.ok) ResultInfo.succeedWithMessage("added item to list")
         else ResultInfo.failWithMessage("failed to add item")
@@ -54,12 +53,13 @@ class Todo(protected val mongoApi: ReactiveMongoApi) {
     */
   def deleteTodoItem(username: String, id: BSONObjectID): Future[ResultInfo[String]] = {
 
-    todoCollection.flatMap(_.remove(usernameAndID(username, id), firstMatchOnly = true)).map(
+    teamBSON.flatMap(_.remove(usernameAndID(username, id), firstMatchOnly = true)).map(
       result =>
         if (result.ok) ResultInfo.succeedWithMessage("removed item from list")
         else ResultInfo.failWithMessage("failed to delete item")
     )
   }
+
 
   /**
     * Mark a todo item as completed
@@ -84,26 +84,41 @@ class Todo(protected val mongoApi: ReactiveMongoApi) {
       )
     )
 
-    todoCollection.flatMap(_.update(s, u)).map(result =>
+    teamBSON.flatMap(_.update(s, u)).map(result =>
       if (result.ok) ResultInfo.succeedWithMessage(s"completed item: ${result.n}")
       else ResultInfo.failWithMessage("failed to add item")
     )
   }
 
   /**
+    * Get all teams
+    *
+    * @return
+    */
+  def getTeams(): Future[ResultInfo[List[JsObject]]] = {
+
+    val s = JsObject(Map[String, JsValue]())
+
+    teamJSON.flatMap(
+      _.find(s).cursor[JsObject]().collect[List]().map(
+        teamList => ResultInfo.success("Retrieved teams", teamList)
+      )
+    )
+  }
+
+  /**
+    * Get all teams containing the user
     *
     * @param username
     * @return
     */
-  def getTodoItems(username: String): Future[ResultInfo[List[JsObject]]] = {
+  def getTeams(username: String): Future[ResultInfo[List[JsObject]]] = {
 
-    val s = JsObject(Map(
-      "username" -> JsString(username)
-    ))
+    val s = JsObject(Map[String, JsValue]("members" -> JsString(username)))
 
-    todoJSON.flatMap(
+    teamJSON.flatMap(
       _.find(s).cursor[JsObject]().collect[List]().map(
-        itemList => ResultInfo.success(s"Retrieved todo items for $username", itemList)
+        teamList => ResultInfo.success("Retrieved teams", teamList)
       )
     )
   }

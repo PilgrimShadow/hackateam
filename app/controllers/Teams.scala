@@ -4,7 +4,7 @@ package controllers
 import javax.inject.Inject
 
 import akka.actor.Status.Success
-import constructs.{CumulativeGoal, Point, TodoItem}
+import constructs.{CumulativeGoal, Point, Team, TodoItem}
 import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.Future
@@ -26,30 +26,29 @@ import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMo
   *
   * @param reactiveMongoApi Holds a reference to the database.
   */
-class Todo @Inject()(val reactiveMongoApi: ReactiveMongoApi)
+class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents {
 
-  protected val todo = new models.Todo(reactiveMongoApi)
+  protected val todo = new models.Teams(reactiveMongoApi)
 
   /**
     * Add a todo item for a username
     *
     * @return
     */
-  def addTodoItem = Action.async { implicit request =>
+  def addTeam = Action.async { implicit request =>
 
     withUsername(username => {
 
-      AddTodoItemForm.form.bindFromRequest()(request).fold(
+      AddTeamForm.form.bindFromRequest()(request).fold(
         _ => invalidFormResponse,
         form => {
 
-          val item = TodoItem(username, form.text, System.currentTimeMillis(), Point(form.longitude, form.latitude))
+          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(), Vector(username), Vector[String]())
 
-          todo.addTodoItem(username, item).map(result => Ok(result.toJson))
+          todo.addTeam(t).map(result => Ok(result.toJson))
         }
       )
-
     })
   }
 
@@ -58,7 +57,7 @@ class Todo @Inject()(val reactiveMongoApi: ReactiveMongoApi)
     *
     * @return
     */
-  def deleteTodoItem = Action.async { implicit request =>
+  def deleteTeam = Action.async { implicit request =>
 
     withUsername(username => {
 
@@ -72,7 +71,6 @@ class Todo @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         }
       )
     })
-
   }
 
   /**
@@ -102,10 +100,22 @@ class Todo @Inject()(val reactiveMongoApi: ReactiveMongoApi)
     *
     * @return
     */
-  def getTodoItems = Action.async { implicit request =>
+  def getTeams = Action.async { implicit request =>
 
-    withUsername(username =>
-      todo.getTodoItems(username).map(resInfo => Ok(resInfo.toJson))
+    withUsername(_ =>
+      todo.getTeams().map(resInfo => Ok(resInfo.toJson))
     )
+  }
+
+  /**
+    * Get all teams containing the user
+    *
+    * @return
+    */
+  def getTeamsForUsername = Action.async { implicit request =>
+
+    withUsername(username => {
+      todo.getTeams(username).map(resInfo => Ok(resInfo.toJson))
+    })
   }
 }

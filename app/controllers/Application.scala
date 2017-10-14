@@ -82,9 +82,9 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
   }
 
 
-  def todo = Action { implicit request =>
+  def teamSearch = Action { implicit request =>
 
-    withUsername(username => Ok(views.html.todo(username)))
+    withUsername(username => Ok(views.html.teamSearch(username)))
   }
 
   /**

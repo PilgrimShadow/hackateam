@@ -1,6 +1,6 @@
 'use strict';
 
-function UserList(elementId, entries) {
+function TeamList(elementId, entries) {
 
 
     // The element Id containing the list
@@ -19,41 +19,34 @@ function UserList(elementId, entries) {
         container.innerHTML = "";
 
         // Create and append all elements
-        this.resultSet.forEach((user) => {
+        this.resultSet.forEach((team) => {
 
             let d = document.createElement('div');
             d.classList.add('partial-border', 'center-text-content');
 
-            let username = document.createElement('div');
-            username.classList.add("search-result-title");
-            username.textContent = user['username'];
+            let teamname = document.createElement('div');
+            teamname.classList.add("search-result-title");
+            teamname.textContent = team['name'];
 
             let about = document.createElement('div');
-            about.classList.add('user-search-about');
-            about.textContent = user['about'];
+            about.classList.add('search-result-text');
+            about.textContent = team['description'];
 
             let skills = document.createElement('div');
             skills.classList.add("search-result-skills");
-            skills.innerHTML = user['skills'].map(function (skill) {
-                return "<span class='skill-bubble'>" + skill['name'] + "</span>";
+            skills.innerHTML = team['skills'].map(function (skill) {
+                return "<span class='skill-bubble'>" + skill + "</span>";
             }).join("");
-
-            let profiles = document.createElement('div');
-            profiles.classList.add("user-search-profile");
-            profiles.innerHTML = "<a class='user-profile-link' href='https://github.com' target='_blank'><i class='fa fa-lg fa-github'></i></a>";
-            profiles.innerHTML += "<a class='user-profile-link' href='https://devpost.com' target='_blank'><i class='fa fa-lg fa-code'></i></a>";
-            profiles.innerHTML += "<a class='user-profile-link' href='https://linkedin.com' target='_blank'><i class='fa fa-lg fa-linkedin'></i></a>";
 
             let joined = document.createElement('div');
             joined.classList.add('search-result-info');
-            joined.textContent = "Joined: " + moment(user['joined']).format('YYYY-MM-DD');
+            joined.textContent = "Formed: " + moment(team['formed']).format('YYYY-MM-DD');
 
 
             // Assemble the element
-            d.append(username);
+            d.append(teamname);
             d.append(about);
             d.append(skills);
-            d.append(profiles);
             d.append(joined);
 
             // Add element to page
@@ -73,13 +66,13 @@ function UserList(elementId, entries) {
     };
 
     // Find all entries containing a search term
-    this.aboutSearch = function (rawSearchTerm) {
+    this.descriptionSearch = function (rawSearchTerm) {
 
         // Ignore case when searching
         const searchTerm = rawSearchTerm.toLowerCase();
 
         this.resultSet = this.entries.filter(function (user) {
-            return user.about.includes(searchTerm);
+            return user['description'].includes(searchTerm);
         });
     };
 
@@ -98,10 +91,10 @@ function UserList(elementId, entries) {
 
         console.log(searchSkills);
 
-        this.resultSet = this.entries.filter(function (user) {
+        this.resultSet = this.entries.filter(function (team) {
 
-            let skillNames = user['skills'].map(function (skill) {
-                return skill.name.toLowerCase();
+            let skillNames = team['skills'].map(function (skill) {
+                return skill.toLowerCase();
             });
 
             console.log(skillNames);
