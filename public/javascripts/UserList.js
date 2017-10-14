@@ -29,7 +29,7 @@ function UserList(elementId, entries) {
             username.textContent = user['username'];
 
             let about = document.createElement('div');
-            about.classList.add('journal-entry-text');
+            about.classList.add('user-search-about');
             about.textContent = user['about'];
 
             let skills = document.createElement('div');
@@ -73,13 +73,13 @@ function UserList(elementId, entries) {
     };
 
     // Find all entries containing a search term
-    this.filter = function (rawSearchTerm) {
+    this.aboutSearch = function (rawSearchTerm) {
 
         // Ignore case when searching
         const searchTerm = rawSearchTerm.toLowerCase();
 
-        this.resultSet = this.entries.filter(function (elem) {
-            return elem.text.includes(searchTerm);
+        this.resultSet = this.entries.filter(function (user) {
+            return user.about.includes(searchTerm);
         });
     };
 

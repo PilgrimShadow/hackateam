@@ -1,705 +1,734 @@
 @(username: String)(implicit messages: Messages)
 
-@loadingDots() = {
-    <p class="loading-dots">
-        <span>&#11044</span>
-        <span>&#11044</span>
-        <span>&#11044</span>
-        <span>&#11044</span>
-    </p>
-}
+    @loadingDots() = {
+        <p class="loading-dots">
+            <span>&#11044</span>
+            <span>&#11044</span>
+            <span>&#11044</span>
+            <span>&#11044</span>
+        </p>
+    }
 
-@panelDataBlock(title: String, id: String) = {
-    <div class="panel-data-block">
-        <u class="data-block-title">@title</u>
-        <br>
-        <div id="@id">
-        @loadingDots()
-        </div>
-    </div>
-}
-
-@plotHolder(id: String, classes: List[String] = List()) = {
-
-    <div class="padded-plot">
-        <div id="@id" class="chart-container loading-icon @classes.mkString(" ")">
-        @loadingDots()
-        </div>
-    </div>
-
-}
-
-@loggedInTemplate("Home") {
-
-} {
-
-    <div id="dashboard-content">
-
-        <div id="study-control">
-
-            <div class="control-panel-element">
-
-                <div id="study-clock">00:00:00</div>
-
-                <form id="study-start-form" class="study-control-form" hidden>
-
-                    <div class="form-group">
-                        <input id="study-start-subject-input" class="study-control-input" name="subject" placeholder="Subject" type="text">
-                    </div>
-
-                    <button type="submit" id="study-start-button" class="btn btn-default study-control-button">start</button>
-                </form>
-
-                <form id="study-stop-form" class="study-control-form" hidden>
-
-                    <div class="form-group">
-                        <input id="study-stop-message-input" class="study-control-input" name="message" placeholder="Describe your session" type="text">
-                    </div>
-
-                    <button type="submit" id="study-stop-button" class="btn btn-default study-control-button">stop</button>
-                </form>
-
-                <form id="study-cancel-form" class="study-control-form" hidden>
-                    <button type="submit" class="btn btn-default study-control-button">cancel</button>
-                </form>
+    @panelDataBlock(title: String, id: String) = {
+        <div class="panel-data-block">
+            <u class="data-block-title">@title</u>
+            <br>
+            <div id="@id">
+            @loadingDots()
             </div>
+        </div>
+    }
 
-            <div id="subject-list-container" class="control-panel-element"></div>
+    @plotHolder(id: String, classes: List[String] = List()) = {
 
-            <div class="control-panel-element">
+        <div class="padded-plot">
+            <div id="@id" class="chart-container loading-icon @classes.mkString(" ")">
+            @loadingDots()
+            </div>
+        </div>
 
-                <div id="add-subject-label" class="control-panel-label" onclick="toggleHidden('add-subject-form')">
-                    Add a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
+    }
+
+    @loggedInTemplate("Home") {
+
+    } {
+
+        <div id="dashboard-content">
+
+            <div id="study-control">
+
+                <div class="control-panel-element">
+
+                    <div id="study-clock">00:00:00</div>
+
+                    <form id="study-start-form" class="study-control-form" hidden>
+
+                        <div class="form-group">
+                            <input id="study-start-subject-input" class="study-control-input" name="subject" placeholder="Subject" type="text">
+                        </div>
+
+                        <button type="submit" id="study-start-button" class="btn btn-default study-control-button">
+                            start</button>
+                    </form>
+
+                    <form id="study-stop-form" class="study-control-form" hidden>
+
+                        <div class="form-group">
+                            <input id="study-stop-message-input" class="study-control-input" name="message" placeholder="Describe your session" type="text">
+                        </div>
+
+                        <button type="submit" id="study-stop-button" class="btn btn-default study-control-button">stop</button>
+                    </form>
+
+                    <form id="study-cancel-form" class="study-control-form" hidden>
+                        <button type="submit" class="btn btn-default study-control-button">cancel</button>
+                    </form>
                 </div>
 
-                <form id="add-subject-form" class="study-control-form" hidden>
+                <div id="subject-list-container" class="control-panel-element"></div>
 
-                    <div class="form-group">
-                        <input id="add-subject-subject-input" class="study-control-input" name="subject" placeholder="New Subject" title="subject name" type="text">
+                <div class="control-panel-element">
+
+                    <div id="add-subject-label" class="control-panel-label" onclick="toggleHidden('add-subject-form')">
+                        Add a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
                     </div>
 
-                    <div class="form-group">
-                        <input id="add-subject-description-input" class="study-control-input" name="description" placeholder="Description" type="text">
-                    </div>
+                    <form id="add-subject-form" class="study-control-form" hidden>
 
-                    <button type="submit" class="btn btn-default study-control-button">add</button>
-                </form>
-            </div>
+                        <div class="form-group">
+                            <input id="add-subject-subject-input" class="study-control-input" name="subject" placeholder="New Subject" title="subject name" type="text">
+                        </div>
 
-            <div class="control-panel-element">
+                        <div class="form-group">
+                            <input id="add-subject-description-input" class="study-control-input" name="description" placeholder="Description" type="text">
+                        </div>
 
-                <div id="rename-subject-label" class="control-panel-label" onclick="toggleHidden('rename-subject-form')">
-                    Rename a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
+                        <button type="submit" class="btn btn-default study-control-button">add</button>
+                    </form>
                 </div>
 
-                <form id="rename-subject-form" class="study-control-form" hidden>
+                <div class="control-panel-element">
 
-                    <div class="form-group">
-                        <input id="rename-subject-old-subject-input" class="study-control-input" name="oldName" placeholder="Old Name" title="old subject name" type="text">
+                    <div id="rename-subject-label" class="control-panel-label" onclick="toggleHidden('rename-subject-form')">
+                        Rename a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
                     </div>
 
-                    <div class="form-group">
-                        <input id="rename-subject-new-subject-input" class="study-control-input" name="newName" placeholder="New Name" title="new subject name" type="text">
+                    <form id="rename-subject-form" class="study-control-form" hidden>
+
+                        <div class="form-group">
+                            <input id="rename-subject-old-subject-input" class="study-control-input" name="oldName" placeholder="Old Name" title="old subject name" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <input id="rename-subject-new-subject-input" class="study-control-input" name="newName" placeholder="New Name" title="new subject name" type="text">
+                        </div>
+
+                        <button type="submit" class="btn btn-default study-control-button">rename</button>
+                    </form>
+
+                </div>
+
+                <div class="control-panel-element">
+
+                    <div id="update-about-label" class="control-panel-label" onclick="toggleHidden('update-about-form')">
+                        Update About Message <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-default study-control-button">rename</button>
-                </form>
+                    <form id="update-about-form" class="study-control-form" hidden>
+                        <div class="form-group">
+                            <label for="update-about-input"></label>
+                            <input id="update-about-input" class="study-control-input" name="text" title="new about message" type="text" placeholder="about me...">
+                        </div>
+
+                        <button type="submit" class="btn btn-default study-control-button">update</button>
+                    </form>
+                </div>
+
+            </div>
+
+
+                <!-- Contains all charts -->
+            <div id="summary-content" class="">
+
+                    <!-- Today's sessions plot -->
+                <div class="">
+                    <div id="widt-highchart" class="loading-icon"></div>
+                </div>
 
             </div>
 
         </div>
 
+        <script src="@routes.Assets.at("javascripts/StudyClock.js")"></script>
+        <script src="@routes.Assets.at("javascripts/FormHandlers.js")"></script>
 
-            <!-- Contains all charts -->
-        <div id="summary-content" class="">
+        <script>
 
-                <!-- Today's sessions plot -->
-            <div class="">
-                <div id="widt-highchart" class="loading-icon"></div>
-            </div>
+                function toggleHidden(elementID) {
 
-        </div>
+                    const elem = $("#" + elementID);
 
-    </div>
-
-    <script src="@routes.Assets.at("javascripts/StudyClock.js")"></script>
-
-    <script>
-
-            function toggleHidden(elementID) {
-
-                const elem = $("#" + elementID);
-
-                elem.attr("hidden", !elem.attr("hidden"));
-            }
-
-            let studyclock = new StudyClock("study-clock");
-
-            // Initialize the page according to the user's status
-            jQuery.ajax({
-                url: "@routes.Sessions.userStatus(username)",
-                type: "get",
-                dataType: "json",
-                success: function (data, textStatus, response) {
-
-                    console.log(response.responseText);
-
-                    console.log(data);
-
-                    if (data['payload']['isStudying']) {
-
-                        // Start the stopwatch
-                        studyclock.start(data['payload']['start']);
-
-                        // Unhide the stop and cancel forms
-                        $("#study-stop-form").removeAttr("hidden");
-                        $("#study-cancel-form").removeAttr("hidden");
-                    } else {
-
-                        // Unhide the start form
-                        $("#study-start-form").removeAttr("hidden");
-                    }
+                    elem.attr("hidden", !elem.attr("hidden"));
                 }
-            });
 
-    </script>
+                let studyclock = new StudyClock("study-clock");
 
-    <script>
-            $(function () {
-                $("#study-start-form").on("submit", function (e) {
+                // Initialize the page according to the user's status
+                jQuery.ajax({
+                    url: "@routes.Sessions.userStatus(username)",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data, textStatus, response) {
 
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
+                        console.log(response.responseText);
 
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.startSession()",
-                        data: $("#study-start-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
+                        console.log(data);
 
-                            if (request.status === 200) {
+                        if (data['payload']['isStudying']) {
 
-                                console.log(request.responseText);
+                            // Start the stopwatch
+                            studyclock.start(data['payload']['start']);
 
-                                let data = {};
+                            // Unhide the stop and cancel forms
+                            $("#study-stop-form").removeAttr("hidden");
+                            $("#study-cancel-form").removeAttr("hidden");
+                        } else {
 
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
+                            // Unhide the start form
+                            $("#study-start-form").removeAttr("hidden");
+                        }
+                    }
+                });
 
+        </script>
+
+        <script>
+
+                $(function () {
+
+                    submitInBackground("#update-about-form", "@routes.Users.updateAboutMessage()",
+                            function (data) {
                                 if (data['success'] === true) {
-
-                                    // TODO: Return the session start time in the payload
-
-                                    // Start the stopwatch
-                                    studyclock.start();
-
-                                    // Unhide the stop and cancel forms
-                                    $("#study-stop-form").removeAttr("hidden");
-                                    $("#study-cancel-form").removeAttr("hidden");
-
-                                    // Hide and clear the start form
-                                    $("#study-start-form").attr("hidden", true);
-                                    $("#study-start-subject-input").val("");
+                                    document.querySelector("#update-about-form").reset();
                                 } else {
+                                    //
+                                }
+                            });
 
+                    $("#study-start-form").on("submit", function (e) {
+
+                        // TODO: prevent fields from clearing
+                        e.preventDefault();
+
+                        $.ajax({
+                            type: "post",
+                            url: "@controllers.routes.Sessions.startSession()",
+                            data: $("#study-start-form").serialize(),
+                            dataType: "json",
+                            complete: function (request, textStatus) {
+
+                                if (request.status === 200) {
+
+                                    console.log(request.responseText);
+
+                                    let data = {};
+
+                                    // Parse the response text as JSON
+                                    try {
+                                        data = JSON.parse(request.responseText);
+                                    } catch (e) {
+                                        console.log("Error parsing response")
+                                    }
+
+                                    if (data['success'] === true) {
+
+                                        // TODO: Return the session start time in the payload
+
+                                        // Start the stopwatch
+                                        studyclock.start();
+
+                                        // Unhide the stop and cancel forms
+                                        $("#study-stop-form").removeAttr("hidden");
+                                        $("#study-cancel-form").removeAttr("hidden");
+
+                                        // Hide and clear the start form
+                                        $("#study-start-form").attr("hidden", true);
+                                        $("#study-start-subject-input").val("");
+                                    } else {
+
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
 
 
-            $(function () {
-                $("#study-stop-form").on("submit", function (e) {
+                $(function () {
+                    $("#study-stop-form").on("submit", function (e) {
 
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
+                        // TODO: prevent fields from clearing
+                        e.preventDefault();
 
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.stopSession()",
-                        data: $("#study-stop-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: "@controllers.routes.Sessions.stopSession()",
+                            data: $("#study-stop-form").serialize(),
+                            dataType: "json",
+                            complete: function (request, textStatus) {
 
-                            if (request.status === 200) {
+                                if (request.status === 200) {
 
-                                console.log(request.responseText);
+                                    console.log(request.responseText);
 
-                                let data = {};
+                                    let data = {};
 
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
+                                    // Parse the response text as JSON
+                                    try {
+                                        data = JSON.parse(request.responseText);
+                                    } catch (e) {
+                                        console.log("Error parsing response")
+                                    }
 
-                                if (data['success'] === true) {
+                                    if (data['success'] === true) {
 
-                                    $("#study-stop-message-input").val("");
+                                        $("#study-stop-message-input").val("");
 
-                                    // Reset the clock
-                                    studyclock.reset();
+                                        // Reset the clock
+                                        studyclock.reset();
 
-                                    $("#study-start-form").removeAttr("hidden");
-                                    $("#study-stop-form").attr("hidden", true);
-                                    $("#study-cancel-form").attr("hidden", true);
-                                } else {
+                                        $("#study-start-form").removeAttr("hidden");
+                                        $("#study-stop-form").attr("hidden", true);
+                                        $("#study-cancel-form").attr("hidden", true);
+                                    } else {
 
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
 
 
-            $(function () {
-                $("#study-cancel-form").on("submit", function (e) {
+                $(function () {
+                    $("#study-cancel-form").on("submit", function (e) {
 
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
+                        // TODO: prevent fields from clearing
+                        e.preventDefault();
 
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.cancelSession()",
-                        data: $("#study-cancel-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: "@controllers.routes.Sessions.cancelSession()",
+                            data: $("#study-cancel-form").serialize(),
+                            dataType: "json",
+                            complete: function (request, textStatus) {
 
-                            if (request.status === 200) {
+                                if (request.status === 200) {
 
-                                console.log(request.responseText);
+                                    console.log(request.responseText);
 
-                                let data = {};
+                                    let data = {};
 
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
+                                    // Parse the response text as JSON
+                                    try {
+                                        data = JSON.parse(request.responseText);
+                                    } catch (e) {
+                                        console.log("Error parsing response")
+                                    }
 
-                                if (data['success'] === true) {
-                                    console.log(data);
-                                    $("#study-stop-message-input").val("");
+                                    if (data['success'] === true) {
+                                        console.log(data);
+                                        $("#study-stop-message-input").val("");
 
-                                    // Reset the clock
-                                    studyclock.reset();
+                                        // Reset the clock
+                                        studyclock.reset();
 
-                                    $("#study-start-form").removeAttr("hidden");
-                                    $("#study-stop-form").attr("hidden", true);
-                                    $("#study-cancel-form").attr("hidden", true);
-                                } else {
+                                        $("#study-start-form").removeAttr("hidden");
+                                        $("#study-stop-form").attr("hidden", true);
+                                        $("#study-cancel-form").attr("hidden", true);
+                                    } else {
 
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
 
 
-            $(function () {
-                $("#add-subject-form").on("submit", function (e) {
+                $(function () {
+                    $("#add-subject-form").on("submit", function (e) {
 
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
+                        // TODO: prevent fields from clearing
+                        e.preventDefault();
 
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.addSkill()",
-                        data: $("#add-subject-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: "@controllers.routes.Sessions.addSkill()",
+                            data: $("#add-subject-form").serialize(),
+                            dataType: "json",
+                            complete: function (request, textStatus) {
 
-                            if (request.status === 200) {
+                                if (request.status === 200) {
 
-                                console.log(request.responseText);
+                                    console.log(request.responseText);
 
-                                let data = {};
+                                    let data = {};
 
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
+                                    // Parse the response text as JSON
+                                    try {
+                                        data = JSON.parse(request.responseText);
+                                    } catch (e) {
+                                        console.log("Error parsing response")
+                                    }
 
-                                if (data['success'] === true) {
-                                    console.log(data);
-                                    // Clear the form inputs
-                                    $("#add-subject-subject-input").val("");
-                                    $("#add-subject-description-input").val("");
-                                } else {
-                                    // Handle errors: subject already added, etc.
+                                    if (data['success'] === true) {
+                                        console.log(data);
+                                        // Clear the form inputs
+                                        $("#add-subject-subject-input").val("");
+                                        $("#add-subject-description-input").val("");
+                                    } else {
+                                        // Handle errors: subject already added, etc.
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
 
-            $(function () {
-                $("#rename-subject-form").on("submit", function (e) {
+                $(function () {
+                    $("#rename-subject-form").on("submit", function (e) {
 
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
+                        // TODO: prevent fields from clearing
+                        e.preventDefault();
 
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.renameSubject()",
-                        data: $("#rename-subject-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: "@controllers.routes.Sessions.renameSubject()",
+                            data: $("#rename-subject-form").serialize(),
+                            dataType: "json",
+                            complete: function (request, textStatus) {
 
-                            if (request.status === 200) {
+                                if (request.status === 200) {
 
-                                console.log(request.responseText);
+                                    console.log(request.responseText);
 
-                                let data = {};
+                                    let data = {};
 
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
+                                    // Parse the response text as JSON
+                                    try {
+                                        data = JSON.parse(request.responseText);
+                                    } catch (e) {
+                                        console.log("Error parsing response")
+                                    }
 
-                                if (data['success'] === true) {
+                                    if (data['success'] === true) {
 
-                                    console.log(data);
+                                        console.log(data);
 
-                                    // Clear the form inputs
-                                    $("#rename-subject-new-subject-input").val("");
-                                    $("#rename-subject-old-subject-input").val("");
-                                } else {
-                                    // Handle errors: subject already added, etc.
+                                        // Clear the form inputs
+                                        $("#rename-subject-new-subject-input").val("");
+                                        $("#rename-subject-old-subject-input").val("");
+                                    } else {
+                                        // Handle errors: subject already added, etc.
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
-            });
 
-    </script>
+        </script>
 
-    <script src="@routes.Assets.at("/javascripts/stats.js")"></script>
+        <script src="@routes.Assets.at("/javascripts/stats.js")"></script>
 
-        <!-- Moment JS -->
-    <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
-    <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
+            <!-- Moment JS -->
+        <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
+        <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
 
-    <script>
+        <script>
 
-            const movingAverageRadius = 60;
+                const movingAverageRadius = 60;
 
-            // Generate the input to the What-I-Did-Today chart
-            function todayPlotPrep(todaySessions) {
+                // Generate the input to the What-I-Did-Today chart
+                function todayPlotPrep(todaySessions) {
 
-                // No sessions yet today. Return this object so that the chart is always plotted.
-                if (todaySessions.length === 0) {
-                    return [{
+                    // No sessions yet today. Return this object so that the chart is always plotted.
+                    if (todaySessions.length === 0) {
+                        return [{
+                            name: ' ',
+                            data: [0],
+                            color: 'transparent'
+                        }];
+                    }
+
+                    const len = todaySessions.length;
+
+                    let startOfDay = todaySessions[0]['start'].clone().startOf('day');
+
+                    let endOfDay = todaySessions[len - 1]['stop'].clone().endOf('day');
+
+                    // The initial gap
+                    let series = [{
                         name: ' ',
-                        data: [0],
+                        data: [(todaySessions[0]['start'].clone() - startOfDay) / 3600000],
                         color: 'transparent'
                     }];
-                }
 
-                const len = todaySessions.length;
+                    // The middle sessions
+                    for (let i = 0; i < len - 1; i++) {
 
-                let startOfDay = todaySessions[0]['start'].clone().startOf('day');
+                        // Append the next session interval
+                        series.push({
+                            name: todaySessions[i]['subject'],
+                            data: [sessionDuration(todaySessions[i])]
+                        });
 
-                let endOfDay = todaySessions[len - 1]['stop'].clone().endOf('day');
-
-                // The initial gap
-                let series = [{
-                    name: ' ',
-                    data: [(todaySessions[0]['start'].clone() - startOfDay) / 3600000],
-                    color: 'transparent'
-                }];
-
-                // The middle sessions
-                for (let i = 0; i < len - 1; i++) {
-
-                    // Append the next session interval
-                    series.push({
-                        name: todaySessions[i]['subject'],
-                        data: [sessionDuration(todaySessions[i])]
-                    });
-
-                    // Append the non-study time following the session
-                    series.push({
-                        name: " ",
-                        data: [(todaySessions[i + 1].start - todaySessions[i].stop) / 3600000],
-                        color: "transparent"
-                    });
-                }
-
-                // The last session
-                series.push({
-                    name: todaySessions[len - 1]['subject'],
-                    data: [sessionDuration(todaySessions[len - 1])]
-                });
-
-                // The last gap
-                series.push({
-                    name: ' ',
-                    data: [(endOfDay - todaySessions[len - 1]['stop'].clone()) / 3600000],
-                    color: 'transparent'
-                });
-
-
-                return series;
-
-            }
-
-            /*
-             * Compute all of the statistics
-             */
-            function computeStats(sessions) {
-
-                const dayGroups = splitDays(sessions);
-
-                const dTotals = dailyTotals(dayGroups);
-
-                return {
-                    "cumulative": cumulative(sessions, 100),
-                    "denseCumulative": denseCumulative(dayGroups),
-                    "total": sumRawSessions(sessions),
-                    "dailyAverage": dailyAverage(dayGroups),
-                    "todaysSessions": todaysSessions(dayGroups),
-                    "monthsSessions": currentMonthSessions(dayGroups),
-                    "todaysTotal": todaysTotal(dayGroups),
-                    "currentStreak": currentStreak(dayGroups),
-                    "daysSinceStart": daysSinceStart(dayGroups),
-                    "probability": probability(97, dayGroups),
-                    "probabilityWithTime": probabilityWithTime(96, dayGroups),
-                    "movingAverage": movingAverage(dayGroups, movingAverageRadius),
-                    "dailyTotals": dTotals,
-                    "dailyTotalHistogram": dailyTotalHistogram(dTotals, 12),
-                    "dayOfWeekAverages": dayOfWeekAverages(dayGroups),
-                    "yearlyTotals": yearlyTotals(dayGroups),
-                    "subjectTotals": subjectTotals(sessions, 10)
-                }
-            }
-
-    </script>
-
-    <script src="@routes.Assets.at("javascripts/SubjectList.js")"></script>
-
-    <script>
-
-            jQuery.ajax({
-                url: "@routes.Sessions.sessionsForUsername(username)",
-                type: "get",
-                dataType: "json",
-                success: function (data, textStatus, response) {
-
-                    // Add the current session to the session array
-                    if (data.status.isStudying) {
-                        data.sessions.push({
-                            "subject": data.status.subject,
-                            "startTime": data.status.start,
-                            "endTime": new Date().getTime()
+                        // Append the non-study time following the session
+                        series.push({
+                            name: " ",
+                            data: [(todaySessions[i + 1].start - todaySessions[i].stop) / 3600000],
+                            color: "transparent"
                         });
                     }
 
+                    // The last session
+                    series.push({
+                        name: todaySessions[len - 1]['subject'],
+                        data: [sessionDuration(todaySessions[len - 1])]
+                    });
 
-                    const subjectList = new SubjectList("subject-list-container", data['skills']);
+                    // The last gap
+                    series.push({
+                        name: ' ',
+                        data: [(endOfDay - todaySessions[len - 1]['stop'].clone()) / 3600000],
+                        color: 'transparent'
+                    });
 
-                    subjectList.display();
 
-                    // Highchart default theme using CSS chart styling
-                    let styledTheme = {
-
-                        title: {
-                            align: 'left',
-                            margin: 50,
-                            x: 20,
-                            y: 40
-                        },
-
-                        subtitle: {
-                            align: 'left',
-                            x: 20,
-                            y: 60
-                        },
-
-                        yAxis: {
-                            tickWidth: 1,
-                            title: {
-                                text: null,
-                                align: "middle",
-                            }
-                        },
-
-                        tooltip: {
-                            valueDecimals: 2,
-                            hideDelay: 150
-                        },
-
-                        plotOptions: {
-
-                            series: {
-                                dataLabels: {
-                                    color: '#B0B0B3'
-                                },
-                                marker: {
-                                    lineColor: '#333'
-                                }
-                            },
-
-                            area: {
-                                marker: {
-                                    radius: 0
-                                },
-
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                }
-                            },
-
-                            areaspline: {
-                                marker: {
-                                    radius: 0
-                                },
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                }
-                            },
-
-                            column: {
-                                color: "rgba(58, 127, 89, .9)",
-                                dataLabels: {
-                                    enabled: false
-                                },
-                                borderWidth: 0
-                            },
-
-                            bar: {
-                                borderWidth: 0
-                            }
-                        },
-
-                        drilldown: {
-                            activeAxisLabelStyle: {
-                                color: '#F0F0F3'
-                            },
-                            activeDataLabelStyle: {
-                                color: '#F0F0F3'
-                            }
-                        },
-
-                        navigation: {
-                            buttonOptions: {
-                                symbolStroke: '#DDDDDD',
-                                theme: {
-                                    fill: '#505053'
-                                }
-                            }
-                        },
-
-                        // scroll charts
-                        rangeSelector: {
-                            buttonTheme: {
-                                fill: '#505053',
-                                stroke: '#000000',
-                                style: {
-                                    color: '#CCC'
-                                },
-                                states: {
-                                    hover: {
-                                        fill: '#707073',
-                                        stroke: '#000000',
-                                        style: {
-                                            color: 'white'
-                                        }
-                                    },
-                                    select: {
-                                        fill: '#000003',
-                                        stroke: '#000000',
-                                        style: {
-                                            color: 'white'
-                                        }
-                                    }
-                                }
-                            },
-                            inputBoxBorderColor: '#505053',
-
-                            inputStyle: {
-                                backgroundColor: '#333',
-                                color: 'silver'
-                            },
-
-                            labelStyle: {
-                                color: 'silver'
-                            }
-                        },
-
-                        navigator: {
-                            handles: {
-                                backgroundColor: '#666',
-                                borderColor: '#AAA'
-                            },
-                            outlineColor: '#CCC',
-                            maskFill: 'rgba(255,255,255,0.1)',
-                            series: {
-                                color: '#7798BF',
-                                lineColor: '#A6C7ED'
-                            },
-                            xAxis: {
-                                gridLineColor: '#505053'
-                            }
-                        },
-
-                        scrollbar: {
-                            barBackgroundColor: '#808083',
-                            barBorderColor: '#808083',
-                            buttonArrowColor: '#CCC',
-                            buttonBackgroundColor: '#606063',
-                            buttonBorderColor: '#606063',
-                            rifleColor: '#FFF',
-                            trackBackgroundColor: '#404043',
-                            trackBorderColor: '#404043'
-                        },
-
-                        legend: {
-                            enabled: false
-                        },
-
-                        credits: {
-                            enabled: false
-                        },
-
-                        exporting: {
-                            enabled: false
-                        },
-
-                        // special colors for some of the
-                        legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        background2: '#505053',
-                        dataLabelsColor: '#B0B0B3',
-                        textColor: '#C0C0C0',
-                        contrastTextColor: '#F0F0F3',
-                        maskColor: 'rgba(255,255,255,0.3)'
-                    };
-
+                    return series;
 
                 }
-            });
-    </script>
-}
+
+                /*
+                 * Compute all of the statistics
+                 */
+                function computeStats(sessions) {
+
+                    const dayGroups = splitDays(sessions);
+
+                    const dTotals = dailyTotals(dayGroups);
+
+                    return {
+                        "cumulative": cumulative(sessions, 100),
+                        "denseCumulative": denseCumulative(dayGroups),
+                        "total": sumRawSessions(sessions),
+                        "dailyAverage": dailyAverage(dayGroups),
+                        "todaysSessions": todaysSessions(dayGroups),
+                        "monthsSessions": currentMonthSessions(dayGroups),
+                        "todaysTotal": todaysTotal(dayGroups),
+                        "currentStreak": currentStreak(dayGroups),
+                        "daysSinceStart": daysSinceStart(dayGroups),
+                        "probability": probability(97, dayGroups),
+                        "probabilityWithTime": probabilityWithTime(96, dayGroups),
+                        "movingAverage": movingAverage(dayGroups, movingAverageRadius),
+                        "dailyTotals": dTotals,
+                        "dailyTotalHistogram": dailyTotalHistogram(dTotals, 12),
+                        "dayOfWeekAverages": dayOfWeekAverages(dayGroups),
+                        "yearlyTotals": yearlyTotals(dayGroups),
+                        "subjectTotals": subjectTotals(sessions, 10)
+                    }
+                }
+
+        </script>
+
+        <script src="@routes.Assets.at("javascripts/SubjectList.js")"></script>
+
+        <script>
+
+                jQuery.ajax({
+                    url: "@routes.Sessions.sessionsForUsername(username)",
+                    type: "get",
+                    dataType: "json",
+                    success: function (data, textStatus, response) {
+
+                        // Add the current session to the session array
+                        if (data.status.isStudying) {
+                            data.sessions.push({
+                                "subject": data.status.subject,
+                                "startTime": data.status.start,
+                                "endTime": new Date().getTime()
+                            });
+                        }
+
+
+                        const subjectList = new SubjectList("subject-list-container", data['skills']);
+
+                        subjectList.display();
+
+                        // Highchart default theme using CSS chart styling
+                        let styledTheme = {
+
+                            title: {
+                                align: 'left',
+                                margin: 50,
+                                x: 20,
+                                y: 40
+                            },
+
+                            subtitle: {
+                                align: 'left',
+                                x: 20,
+                                y: 60
+                            },
+
+                            yAxis: {
+                                tickWidth: 1,
+                                title: {
+                                    text: null,
+                                    align: "middle",
+                                }
+                            },
+
+                            tooltip: {
+                                valueDecimals: 2,
+                                hideDelay: 150
+                            },
+
+                            plotOptions: {
+
+                                series: {
+                                    dataLabels: {
+                                        color: '#B0B0B3'
+                                    },
+                                    marker: {
+                                        lineColor: '#333'
+                                    }
+                                },
+
+                                area: {
+                                    marker: {
+                                        radius: 0
+                                    },
+
+                                    lineWidth: 1,
+                                    states: {
+                                        hover: {
+                                            lineWidth: 1
+                                        }
+                                    }
+                                },
+
+                                areaspline: {
+                                    marker: {
+                                        radius: 0
+                                    },
+                                    lineWidth: 1,
+                                    states: {
+                                        hover: {
+                                            lineWidth: 1
+                                        }
+                                    }
+                                },
+
+                                column: {
+                                    color: "rgba(58, 127, 89, .9)",
+                                    dataLabels: {
+                                        enabled: false
+                                    },
+                                    borderWidth: 0
+                                },
+
+                                bar: {
+                                    borderWidth: 0
+                                }
+                            },
+
+                            drilldown: {
+                                activeAxisLabelStyle: {
+                                    color: '#F0F0F3'
+                                },
+                                activeDataLabelStyle: {
+                                    color: '#F0F0F3'
+                                }
+                            },
+
+                            navigation: {
+                                buttonOptions: {
+                                    symbolStroke: '#DDDDDD',
+                                    theme: {
+                                        fill: '#505053'
+                                    }
+                                }
+                            },
+
+                            // scroll charts
+                            rangeSelector: {
+                                buttonTheme: {
+                                    fill: '#505053',
+                                    stroke: '#000000',
+                                    style: {
+                                        color: '#CCC'
+                                    },
+                                    states: {
+                                        hover: {
+                                            fill: '#707073',
+                                            stroke: '#000000',
+                                            style: {
+                                                color: 'white'
+                                            }
+                                        },
+                                        select: {
+                                            fill: '#000003',
+                                            stroke: '#000000',
+                                            style: {
+                                                color: 'white'
+                                            }
+                                        }
+                                    }
+                                },
+                                inputBoxBorderColor: '#505053',
+
+                                inputStyle: {
+                                    backgroundColor: '#333',
+                                    color: 'silver'
+                                },
+
+                                labelStyle: {
+                                    color: 'silver'
+                                }
+                            },
+
+                            navigator: {
+                                handles: {
+                                    backgroundColor: '#666',
+                                    borderColor: '#AAA'
+                                },
+                                outlineColor: '#CCC',
+                                maskFill: 'rgba(255,255,255,0.1)',
+                                series: {
+                                    color: '#7798BF',
+                                    lineColor: '#A6C7ED'
+                                },
+                                xAxis: {
+                                    gridLineColor: '#505053'
+                                }
+                            },
+
+                            scrollbar: {
+                                barBackgroundColor: '#808083',
+                                barBorderColor: '#808083',
+                                buttonArrowColor: '#CCC',
+                                buttonBackgroundColor: '#606063',
+                                buttonBorderColor: '#606063',
+                                rifleColor: '#FFF',
+                                trackBackgroundColor: '#404043',
+                                trackBorderColor: '#404043'
+                            },
+
+                            legend: {
+                                enabled: false
+                            },
+
+                            credits: {
+                                enabled: false
+                            },
+
+                            exporting: {
+                                enabled: false
+                            },
+
+                            // special colors for some of the
+                            legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            background2: '#505053',
+                            dataLabelsColor: '#B0B0B3',
+                            textColor: '#C0C0C0',
+                            contrastTextColor: '#F0F0F3',
+                            maskColor: 'rgba(255,255,255,0.3)'
+                        };
+
+
+                    }
+                });
+        </script>
+    }

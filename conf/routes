@@ -74,6 +74,9 @@ POST        /journal/add                    controllers.JournalEntries.addJourna
 # Add a new user
 POST        /users/add                      controllers.Users.addNewUser()
 
+# Update the about message for a user
+POST        /users/updateAbout              controllers.Users.updateAboutMessage()
+
 # Get the list of users
 GET         /users/list                     controllers.Users.getUsers()
 

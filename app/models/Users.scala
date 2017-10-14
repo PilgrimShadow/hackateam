@@ -105,6 +105,28 @@ class Users(protected val api: ReactiveMongoApi) {
     usersCollection.flatMap(_.find(usernameSelector(username), AboutMessage.projector).one[AboutMessage])
   }
 
+  /**
+    * Update the about message for a given user
+    *
+    * @param username
+    * @param text
+    * @return
+    */
+  def updateAboutMessage(username: String, text: String): Future[ResultInfo[String]] = {
+
+    val u = BSONDocument(
+      "$set" -> BSONDocument(
+        "about" -> text
+      )
+    )
+
+    usersCollection.flatMap(_.update(usernameSelector(username), u)).map(
+      result =>
+        if (result.ok) ResultInfo.succeedWithMessage("updated about message")
+        else ResultInfo.failWithMessage("failed to update about message")
+    )
+  }
+
 
   /**
     * Get the social profiles for the user.

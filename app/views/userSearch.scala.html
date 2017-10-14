@@ -10,7 +10,10 @@
 
                 <form id="user-search-form">
                     <label for="user-skill-search" class="sr-only">Search</label>
-                    <input type="text" name="search-text" id="user-skill-search" class="form-control" placeholder="search for skills...">
+                    <input type="text" name="search-text" id="user-skill-search" class="form-control user-text-search" placeholder="search for skills...">
+
+                    <label for="user-about-search" class="sr-only">Search</label>
+                    <input type="text" name="search-text" id="user-about-search" class="form-control user-text-search" placeholder="search descriptions...">
                 </form>
 
                 <div id="past-journal-entries">
@@ -57,6 +60,15 @@
                                 userList.skillSearch(searchText.val());
                                 userList.display();
                             });
+
+                            let s = $('#user-about-search');
+
+                            s.keyup(function () {
+
+                                userList.aboutSearch(s.val());
+                                userList.display();
+                            });
+
                         } else {
                             console.log("There was a problem loading your journal entries")
                         }

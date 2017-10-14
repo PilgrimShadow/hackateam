@@ -3,7 +3,7 @@ package controllers
 // Standard Library
 import javax.inject.Inject
 
-import forms.{DeactivateProfileForm, LoginForm, UpdateEmailForm, UpdatePasswordForm}
+import forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
 
 import scala.concurrent.Future
@@ -199,22 +199,22 @@ class Users @Inject()(val reactiveMongoApi: ReactiveMongoApi, val messagesApi: M
   /**
     * Set the about message for the given user
     *
-    * @param username The username for which to set the about message
-    * @param message  The new about message
     * @return
     */
-  def updateAboutMessage(username: String, message: String): Action[AnyContent] = Action.async { implicit request =>
+  def updateAboutMessage: Action[AnyContent] = Action.async { implicit request =>
 
-    val aboutRegex = "^[\\w\\s]{0,256}$".r
+    withUsername(username => {
 
-    // Check the about message
-    if (aboutRegex.findFirstIn(message).isEmpty) {
-      Future(Ok(ResultInfo.failWithMessage("Unacceptable 'about' text").toJson))
-    }
+      UpdateAboutForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
 
-    val cleanedMessage = "\\s+".r.replaceAllIn(message, " ")
+          val cleanedMessage = "\\s+".r.replaceAllIn(goodForm.text.trim(), " ")
 
-    ???
+          usersModel.updateAboutMessage(username, cleanedMessage).map(resInfo => Ok(resInfo.toJson))
+        }
+      )
+    })
   }
 
 }

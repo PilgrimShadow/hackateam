@@ -50,6 +50,10 @@
     display: inline-block;
 }
 
+.user-search-about {
+    font-size: 1em;
+}
+
 .user-profile-link {
     margin: 5px;
 }
@@ -74,7 +78,12 @@
     padding-bottom: 20px;
 }
 
-#user-skill-search {
+.user-text-search {
+
+    width: 33%;
+
+    display: inline-block;
+
     background: transparent;
     color: #E0E0E3;
     border: solid #707073 2px;
