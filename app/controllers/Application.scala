@@ -92,7 +92,7 @@ class Application @Inject()(val messagesApi: MessagesApi) extends Controller wit
     *
     * @return
     */
-  def journal = Action { implicit request =>
+  def userSearch = Action { implicit request =>
 
     withUsername(username => Ok(views.html.journal(username)))
   }

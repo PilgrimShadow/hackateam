@@ -89,7 +89,7 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   def addSkill = Action.async { implicit request =>
 
     withUsername(username => {
-      AddSubjectForm.form.bindFromRequest()(request).fold(
+      AddSkillForm.form.bindFromRequest()(request).fold(
         _ => invalidFormResponse,
         goodForm => {
 
@@ -122,7 +122,7 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   def removeSkill = Action.async { implicit request =>
 
     withUsername(username => {
-      RemoveSubjectForm.form.bindFromRequest()(request).fold(
+      RemoveSkillForm.form.bindFromRequest()(request).fold(
         _ => invalidFormResponse,
         goodForm => sessions.removeSubject(username, goodForm.subject).map(resultInfo => Ok(resultInfo.toJson))
       )
@@ -139,7 +139,7 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   def renameSubject = Action.async { implicit request =>
 
     withUsername(username => {
-      RenameSubjectForm.form.bindFromRequest()(request).fold(
+      RenameSkillForm.form.bindFromRequest()(request).fold(
         _ => invalidFormResponse,
         goodForm => {
 

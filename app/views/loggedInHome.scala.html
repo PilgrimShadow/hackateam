@@ -1,5 +1,34 @@
 @(username: String)(implicit messages: Messages)
 
+@loadingDots() = {
+    <p class="loading-dots">
+        <span>&#11044</span>
+        <span>&#11044</span>
+        <span>&#11044</span>
+        <span>&#11044</span>
+    </p>
+}
+
+@panelDataBlock(title: String, id: String) = {
+    <div class="panel-data-block">
+        <u class="data-block-title">@title</u>
+        <br>
+        <div id="@id">
+        @loadingDots()
+        </div>
+    </div>
+}
+
+@plotHolder(id: String, classes: List[String] = List()) = {
+
+    <div class="padded-plot">
+        <div id="@id" class="chart-container loading-icon @classes.mkString(" ")">
+        @loadingDots()
+        </div>
+    </div>
+
+}
+
 @loggedInTemplate("Home") {
     <link href="@routes.Assets.at("stylesheets/styled-charts.css")" rel="stylesheet" type="text/css">
 } {
@@ -40,7 +69,7 @@
             <div class="control-panel-element">
 
                 <div id="add-subject-label" class="control-panel-label" onclick="toggleHidden('add-subject-form')">
-                    Add a subject <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
+                    Add a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
                 </div>
 
                 <form id="add-subject-form" class="study-control-form" hidden>
@@ -60,7 +89,7 @@
             <div class="control-panel-element">
 
                 <div id="rename-subject-label" class="control-panel-label" onclick="toggleHidden('rename-subject-form')">
-                    Rename a subject <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
+                    Rename a skill <span class="fa fa-lg fa-caret-down control-panel-caret"></span>
                 </div>
 
                 <form id="rename-subject-form" class="study-control-form" hidden>
@@ -92,6 +121,8 @@
         </div>
 
     </div>
+
+    <script src="@routes.Assets.at("javascripts/StudyClock.js")"></script>
 
     <script>
 
@@ -284,7 +315,7 @@
 
                     $.ajax({
                         type: "post",
-                        url: "@controllers.routes.Sessions.addSubject()",
+                        url: "@controllers.routes.Sessions.addSkill()",
                         data: $("#add-subject-form").serialize(),
                         dataType: "json",
                         complete: function (request, textStatus) {
@@ -360,16 +391,6 @@
 
     </script>
 
-        <!-- Used in defining the gradient for area charts -->
-    <svg style="height: 0">
-        <defs>
-            <linearGradient id="gradient-0" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" />
-                <stop offset="1" />
-            </linearGradient>
-        </defs>
-    </svg>
-
     <script src="@routes.Assets.at("/javascripts/stats.js")"></script>
 
         <!-- Moment JS -->
@@ -378,7 +399,67 @@
 
     <script>
 
+            const movingAverageRadius = 60;
 
+            // Generate the input to the What-I-Did-Today chart
+            function todayPlotPrep(todaySessions) {
+
+                // No sessions yet today. Return this object so that the chart is always plotted.
+                if (todaySessions.length === 0) {
+                    return [{
+                        name: ' ',
+                        data: [0],
+                        color: 'transparent'
+                    }];
+                }
+
+                const len = todaySessions.length;
+
+                let startOfDay = todaySessions[0]['start'].clone().startOf('day');
+
+                let endOfDay = todaySessions[len - 1]['stop'].clone().endOf('day');
+
+                // The initial gap
+                let series = [{
+                    name: ' ',
+                    data: [(todaySessions[0]['start'].clone() - startOfDay) / 3600000],
+                    color: 'transparent'
+                }];
+
+                // The middle sessions
+                for (let i = 0; i < len - 1; i++) {
+
+                    // Append the next session interval
+                    series.push({
+                        name: todaySessions[i]['subject'],
+                        data: [sessionDuration(todaySessions[i])]
+                    });
+
+                    // Append the non-study time following the session
+                    series.push({
+                        name: " ",
+                        data: [(todaySessions[i + 1].start - todaySessions[i].stop) / 3600000],
+                        color: "transparent"
+                    });
+                }
+
+                // The last session
+                series.push({
+                    name: todaySessions[len - 1]['subject'],
+                    data: [sessionDuration(todaySessions[len - 1])]
+                });
+
+                // The last gap
+                series.push({
+                    name: ' ',
+                    data: [(endOfDay - todaySessions[len - 1]['stop'].clone()) / 3600000],
+                    color: 'transparent'
+                });
+
+
+                return series;
+
+            }
 
             /*
              * Compute all of the statistics
@@ -442,19 +523,193 @@
                         });
                     }
 
+
                     const subjectList = new SubjectList("subject-list-container", data.subjects);
 
-                    function cmp(sub1, sub2) {
-                        if (sub1[1] < sub2[1]) {
-                            return 1;
-                        }
+                    subjectList.display();
 
-                        if (sub1[1] > sub2[1]) {
-                            return -1;
-                        }
+                    // Highchart default theme using CSS chart styling
+                    let styledTheme = {
 
-                        return 0;
-                    }
+                        title: {
+                            align: 'left',
+                            margin: 50,
+                            x: 20,
+                            y: 40
+                        },
+
+                        subtitle: {
+                            align: 'left',
+                            x: 20,
+                            y: 60
+                        },
+
+                        yAxis: {
+                            tickWidth: 1,
+                            title: {
+                                text: null,
+                                align: "middle",
+                            }
+                        },
+
+                        tooltip: {
+                            valueDecimals: 2,
+                            hideDelay: 150
+                        },
+
+                        plotOptions: {
+
+                            series: {
+                                dataLabels: {
+                                    color: '#B0B0B3'
+                                },
+                                marker: {
+                                    lineColor: '#333'
+                                }
+                            },
+
+                            area: {
+                                marker: {
+                                    radius: 0
+                                },
+
+                                lineWidth: 1,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                }
+                            },
+
+                            areaspline: {
+                                marker: {
+                                    radius: 0
+                                },
+                                lineWidth: 1,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                }
+                            },
+
+                            column: {
+                                color: "rgba(58, 127, 89, .9)",
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                borderWidth: 0
+                            },
+
+                            bar: {
+                                borderWidth: 0
+                            }
+                        },
+
+                        drilldown: {
+                            activeAxisLabelStyle: {
+                                color: '#F0F0F3'
+                            },
+                            activeDataLabelStyle: {
+                                color: '#F0F0F3'
+                            }
+                        },
+
+                        navigation: {
+                            buttonOptions: {
+                                symbolStroke: '#DDDDDD',
+                                theme: {
+                                    fill: '#505053'
+                                }
+                            }
+                        },
+
+                        // scroll charts
+                        rangeSelector: {
+                            buttonTheme: {
+                                fill: '#505053',
+                                stroke: '#000000',
+                                style: {
+                                    color: '#CCC'
+                                },
+                                states: {
+                                    hover: {
+                                        fill: '#707073',
+                                        stroke: '#000000',
+                                        style: {
+                                            color: 'white'
+                                        }
+                                    },
+                                    select: {
+                                        fill: '#000003',
+                                        stroke: '#000000',
+                                        style: {
+                                            color: 'white'
+                                        }
+                                    }
+                                }
+                            },
+                            inputBoxBorderColor: '#505053',
+
+                            inputStyle: {
+                                backgroundColor: '#333',
+                                color: 'silver'
+                            },
+
+                            labelStyle: {
+                                color: 'silver'
+                            }
+                        },
+
+                        navigator: {
+                            handles: {
+                                backgroundColor: '#666',
+                                borderColor: '#AAA'
+                            },
+                            outlineColor: '#CCC',
+                            maskFill: 'rgba(255,255,255,0.1)',
+                            series: {
+                                color: '#7798BF',
+                                lineColor: '#A6C7ED'
+                            },
+                            xAxis: {
+                                gridLineColor: '#505053'
+                            }
+                        },
+
+                        scrollbar: {
+                            barBackgroundColor: '#808083',
+                            barBorderColor: '#808083',
+                            buttonArrowColor: '#CCC',
+                            buttonBackgroundColor: '#606063',
+                            buttonBorderColor: '#606063',
+                            rifleColor: '#FFF',
+                            trackBackgroundColor: '#404043',
+                            trackBorderColor: '#404043'
+                        },
+
+                        legend: {
+                            enabled: false
+                        },
+
+                        credits: {
+                            enabled: false
+                        },
+
+                        exporting: {
+                            enabled: false
+                        },
+
+                        // special colors for some of the
+                        legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        background2: '#505053',
+                        dataLabelsColor: '#B0B0B3',
+                        textColor: '#C0C0C0',
+                        contrastTextColor: '#F0F0F3',
+                        maskColor: 'rgba(255,255,255,0.3)'
+                    };
+
+
                 }
             });
     </script>
