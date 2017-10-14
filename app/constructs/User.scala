@@ -14,7 +14,7 @@ import reactivemongo.bson.BSONDocument
   * @param password    The account password for the user
   * @param joined      The timestamp when the user joined
   * @param status      The current status of the user
-  * @param skills      The valid study subjects for the user
+  * @param skills    The valid study subjects for the user
   * @param sessions    The session list for this user
   */
 case class User(username: String, about: String, contactInfo: ContactInfo, password: String, joined: Long,

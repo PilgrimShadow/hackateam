@@ -8,12 +8,10 @@
         <div class="row">
             <div class="col-sm-8 col-sm-offset-2">
 
-                <div id="journal-search-bar">
-                    <form>
-                        <label for="journal-search-text" class="sr-only">Search</label>
-                        <input type="text" name="search-text" id="journal-search-text" class="form-control">
-                    </form>
-                </div>
+                <form id="user-search-form">
+                    <label for="user-skill-search" class="sr-only">Search</label>
+                    <input type="text" name="search-text" id="user-skill-search" class="form-control">
+                </form>
 
                 <div id="past-journal-entries">
 
@@ -36,7 +34,7 @@
             // Set up handlers and load journal entries
             $(function () {
 
-                let searchText = $('#journal-search-text');
+                let searchText = $('#user-skill-search');
 
                 $.ajax({
                     type: "get",
@@ -55,9 +53,8 @@
 
                             // Set up the handler for the journal search bar
                             searchText.keyup(function () {
-                                const searchTerm = searchText.val();
 
-                                userList.skillSearch(searchTerm);
+                                userList.skillSearch(searchText.val());
                                 userList.display();
                             });
                         } else {

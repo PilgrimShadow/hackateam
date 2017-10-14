@@ -30,6 +30,10 @@
     color: #707073;
 }
 
+.user-search-profile {
+
+}
+
 #journal-entry-form ::-webkit-input-placeholder {
     color: #707073;
 }
@@ -46,11 +50,11 @@
     color: #707073;
 }
 
-#journal-search-bar {
+#user-search-form {
     padding-bottom: 20px;
 }
 
-#journal-search-text {
+#user-skill-search {
     background: transparent;
     color: #E0E0E3;
 

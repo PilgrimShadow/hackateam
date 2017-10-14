@@ -18,7 +18,8 @@ function UserList(elementId, entries) {
 
         container.innerHTML = "";
 
-        let entryHtml = this.resultSet.forEach((user) => {
+        // Create and append all elements
+        this.resultSet.forEach((user) => {
 
             let d = document.createElement('div');
             d.classList.add('partial-border');
@@ -35,6 +36,12 @@ function UserList(elementId, entries) {
                 return skill.name;
             }).join(", ");
 
+            let profiles = document.createElement('div');
+            profiles.classList.add("user-search-profile");
+            profiles.innerHTML = "<a href='https://github.com' target='_blank'><i class='fa fa-lg fa-github'></i></a>";
+            profiles.innerHTML += "<a href='https://devpost.com' target='_blank'><i class='fa fa-lg fa-code'></i></a>";
+            profiles.innerHTML += "<a href='https://linkedin.com' target='_blank'><i class='fa fa-lg fa-linkedin'></i></a>";
+
             let joined = document.createElement('div');
             joined.classList.add('journal-entry-info');
             joined.textContent = moment(user.joined).format('YYYY-MM-DD HH:mm');
@@ -44,6 +51,7 @@ function UserList(elementId, entries) {
             d.append(username);
             d.append(about);
             d.append(skills);
+            d.append(profiles);
             d.append(joined);
 
             // Add element to page
@@ -73,15 +81,28 @@ function UserList(elementId, entries) {
         });
     };
 
+    // Search for users with certain skills
     this.skillSearch = function (searchTerm) {
 
-        let searchSkills = new Set(searchTerm.split(","));
+        // Null searches
+        if (searchTerm.length === 0) {
+            this.resultSet = this.entries.slice();
+            return
+        }
+
+        let searchSkills = new Set(searchTerm.toLowerCase().split(",").map((rawTerm) => {
+            return rawTerm.trim();
+        }));
+
+        console.log(searchSkills);
 
         this.resultSet = this.entries.filter(function (user) {
 
             let skillNames = user['skills'].map(function (skill) {
-                return skill.name;
+                return skill.name.toLowerCase();
             });
+
+            console.log(skillNames);
 
             let intersection = skillNames.filter((x) => searchSkills.has(x));
 
