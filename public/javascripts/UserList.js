@@ -22,29 +22,31 @@ function UserList(elementId, entries) {
         this.resultSet.forEach((user) => {
 
             let d = document.createElement('div');
-            d.classList.add('partial-border');
+            d.classList.add('partial-border', 'center-text-content');
 
             let username = document.createElement('div');
+            username.classList.add("user-search-username");
             username.textContent = user['username'];
 
             let about = document.createElement('div');
-            about.classList.add('journal-entry-text', 'center-text-content');
+            about.classList.add('journal-entry-text');
             about.textContent = user['about'];
 
             let skills = document.createElement('div');
-            skills.textContent = user['skills'].map(function (skill) {
-                return skill.name;
-            }).join(", ");
+            skills.classList.add("user-search-skill-list");
+            skills.innerHTML = user['skills'].map(function (skill) {
+                return "<span class='user-search-skill'>" + skill['name'] + "</span>";
+            }).join("");
 
             let profiles = document.createElement('div');
             profiles.classList.add("user-search-profile");
-            profiles.innerHTML = "<a href='https://github.com' target='_blank'><i class='fa fa-lg fa-github'></i></a>";
-            profiles.innerHTML += "<a href='https://devpost.com' target='_blank'><i class='fa fa-lg fa-code'></i></a>";
-            profiles.innerHTML += "<a href='https://linkedin.com' target='_blank'><i class='fa fa-lg fa-linkedin'></i></a>";
+            profiles.innerHTML = "<a class='user-profile-link' href='https://github.com' target='_blank'><i class='fa fa-lg fa-github'></i></a>";
+            profiles.innerHTML += "<a class='user-profile-link' href='https://devpost.com' target='_blank'><i class='fa fa-lg fa-code'></i></a>";
+            profiles.innerHTML += "<a class='user-profile-link' href='https://linkedin.com' target='_blank'><i class='fa fa-lg fa-linkedin'></i></a>";
 
             let joined = document.createElement('div');
-            joined.classList.add('journal-entry-info');
-            joined.textContent = moment(user.joined).format('YYYY-MM-DD HH:mm');
+            joined.classList.add('user-search-info');
+            joined.textContent = "Joined: " + moment(user.joined).format('YYYY-MM-DD');
 
 
             // Assemble the element
