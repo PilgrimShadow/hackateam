@@ -1,5 +1,7 @@
 package constructs
 
+import play.api.libs.json.Json
+
 
 case class ContactInfo(firstName: String, lastName: String, middleName: String, email: String,
                        phone: String, profiles: Profiles)
@@ -7,6 +9,9 @@ case class ContactInfo(firstName: String, lastName: String, middleName: String, 
 object ContactInfo {
 
   import reactivemongo.bson.Macros
+
+  // Implicitly convert to JSON
+  implicit val contactInfoWrites = Json.writes[ContactInfo]
 
   /**
     * Create a ContactInfo object with only an email

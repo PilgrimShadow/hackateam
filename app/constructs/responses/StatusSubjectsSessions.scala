@@ -9,10 +9,10 @@ import reactivemongo.bson.BSONDocument
   *
   * @param username The username.
   * @param status   The study status of the user.
-  * @param subjects The subject vector for the user.
+  * @param skills The subject vector for the user.
   * @param sessions The session list for the user.
   */
-case class StatusSubjectsSessions(username: String, status: Status, subjects: Vector[Skill], sessions: Vector[Session])
+case class StatusSubjectsSessions(username: String, status: Status, skills: Vector[Skill], sessions: Vector[Session])
 
 
 object StatusSubjectsSessions {
@@ -27,6 +27,6 @@ object StatusSubjectsSessions {
 
 
   implicit val projector = new Projector[StatusSubjectsSessions] {
-    val projector = BSONDocument("username" -> 1, "status" -> 1, "subjects" -> 1, "sessions" -> 1, "_id" -> 0)
+    val projector = BSONDocument("username" -> 1, "status" -> 1, "skills" -> 1, "sessions" -> 1, "_id" -> 0)
   }
 }

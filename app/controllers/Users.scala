@@ -33,6 +33,14 @@ class Users @Inject()(val reactiveMongoApi: ReactiveMongoApi, val messagesApi: M
     */
   protected val usersModel = new models.Users(reactiveMongoApi)
 
+
+  def getUsers = Action.async { implicit request =>
+
+    usersModel.getUsers.map(resInfo => Ok(resInfo.toJson))
+
+  }
+
+
   /**
     * Begin a new session
     *

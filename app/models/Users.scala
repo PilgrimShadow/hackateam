@@ -32,6 +32,19 @@ class Users(protected val api: ReactiveMongoApi) {
 
 
   /**
+    * Get all users from the database
+    *
+    * @return
+    */
+  def getUsers: Future[ResultInfo[List[User]]] = {
+
+    usersCollection.flatMap(_.find(BSONDocument()).cursor[User]().collect[List]()).map(resSet => {
+      ResultInfo.success("data", resSet)
+    })
+
+  }
+
+  /**
     * Add a new user to the database
     *
     * @param user The user to add

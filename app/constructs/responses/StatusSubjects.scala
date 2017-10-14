@@ -9,9 +9,9 @@ import reactivemongo.bson.BSONDocument
   *
   * @param username The user's username.
   * @param status   The status of the user.
-  * @param subjects The valid subjects for the user
+  * @param skills The valid subjects for the user
   */
-case class StatusSubjects(username: String, status: Status, subjects: Vector[Skill])
+case class StatusSubjects(username: String, status: Status, skills: Vector[Skill])
 
 
 object StatusSubjects {
@@ -25,6 +25,6 @@ object StatusSubjects {
   implicit val writer = Json.writes[StatusSubjects]
 
   implicit val projector = new Projector[StatusSubjects] {
-    val projector = BSONDocument("username" -> 1, "status" -> 1, "subjects" -> 1, "_id" -> 0)
+    val projector = BSONDocument("username" -> 1, "status" -> 1, "skills" -> 1, "_id" -> 0)
   }
 }

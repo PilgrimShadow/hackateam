@@ -30,7 +30,7 @@
 }
 
 @loggedInTemplate("Home") {
-    <link href="@routes.Assets.at("stylesheets/styled-charts.css")" rel="stylesheet" type="text/css">
+
 } {
 
     <div id="dashboard-content">
@@ -497,17 +497,6 @@
 
     <script>
 
-            function fillSummaryValues(stats) {
-
-                const n1 = stats.todaysTotal.toFixed(2).toString();
-                const n2 = stats.dailyAverage.toFixed(2).toString();
-
-                document.getElementById("streak-count").innerText = stats.currentStreak.toString() + " d";
-                document.getElementById("current-day-total").innerText = n1;
-                document.getElementById("average-day-total").innerText = n2;
-            }
-
-
             jQuery.ajax({
                 url: "@routes.Sessions.sessionsForUsername(username)",
                 type: "get",
@@ -524,7 +513,7 @@
                     }
 
 
-                    const subjectList = new SubjectList("subject-list-container", data.subjects);
+                    const subjectList = new SubjectList("subject-list-container", data['skills']);
 
                     subjectList.display();
 

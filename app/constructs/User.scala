@@ -1,6 +1,7 @@
 package constructs
 
 // Reactive Mongo
+import play.api.libs.json.Json
 import reactivemongo.bson.BSONDocument
 
 
@@ -13,11 +14,11 @@ import reactivemongo.bson.BSONDocument
   * @param password    The account password for the user
   * @param joined      The timestamp when the user joined
   * @param status      The current status of the user
-  * @param subjects    The valid study subjects for the user
+  * @param skills      The valid study subjects for the user
   * @param sessions    The session list for this user
   */
 case class User(username: String, about: String, contactInfo: ContactInfo, password: String, joined: Long,
-                status: Status, subjects: Vector[Skill], sessions: Vector[Session])
+                status: Status, skills: Vector[Skill], sessions: Vector[Session])
 
 
 object User {
@@ -26,6 +27,9 @@ object User {
 
   // Implicitly convert to/from BSON
   implicit val userHandler = Macros.handler[User]
+
+  // Implicitly convert to JSON
+  implicit val userWrites = Json.writes[User]
 
   // A MongoDB projector to get only the fields for this class
   val projector = BSONDocument("_id" -> 0)

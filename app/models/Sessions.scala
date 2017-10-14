@@ -83,7 +83,7 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
       optStatsSubs.fold(Future(ResultInfo.invalidUsername))(statsAndSubs => {
 
         if (statsAndSubs.status.isStudying) Future(ResultInfo.alreadyStudying)
-        else if (!statsAndSubs.subjects.map(_.name).contains(subject)) Future(ResultInfo.invalidSubject)
+        else if (!statsAndSubs.skills.map(_.name).contains(subject)) Future(ResultInfo.invalidSubject)
         else {
 
           val selector = usernameSelector(username)
@@ -196,7 +196,7 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
     userData[StatusSubjects](username).flatMap(opt =>
 
       opt.fold(Future(ResultInfo.invalidUsername))(statsAndSubs => {
-        if (statsAndSubs.subjects.map(_.name).contains(subject)) {
+        if (statsAndSubs.skills.map(_.name).contains(subject)) {
 
           Future(ResultInfo.succeedWithMessage(s"$subject is already a subject"))
         } else {
@@ -204,7 +204,7 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
           // The modifier to add a subject
           val modifier = BSONDocument(
             "$push" -> BSONDocument(
-              "subjects" -> Skill(subject, System.currentTimeMillis(), description)
+              "skills" -> Skill(subject, System.currentTimeMillis(), description)
             )
           )
 
@@ -235,14 +235,14 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
       // Check the success of the query
       opt.fold(Future(ResultInfo.invalidUsername))(sessionData => {
 
-        if (!sessionData.subjects.map(_.name).contains(subject)) {
+        if (!sessionData.skills.map(_.name).contains(subject)) {
           Future(ResultInfo.failWithMessage("Invalid subject"))
         } else if (sessionData.sessions.map(_.subject).toSet.contains(subject)) {
           Future(ResultInfo.failWithMessage(s"Can't remove $subject: it has been studied"))
         } else {
 
           // New subject vector without the subject.
-          val newSubjects = sessionData.subjects.filterNot(_.name == subject)
+          val newSubjects = sessionData.skills.filterNot(_.name == subject)
 
           // The modifier needed to add a subject
           val modifier = BSONDocument(
@@ -280,19 +280,19 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
 
         if (sessionData.status.isStudying) {
           Future(ResultInfo.failWithMessage("Can't rename subjects while studying"))
-        } else sessionData.subjects.find(_.name == oldName).fold(
+        } else sessionData.skills.find(_.name == oldName).fold(
           Future(ResultInfo.failWithMessage(s"$oldName is an invalid subject"))
         )(oldSub => {
 
           // Check if the new subject name is already in use
-          if (sessionData.subjects.map(_.name).contains(newName)) {
+          if (sessionData.skills.map(_.name).contains(newName)) {
             Future(ResultInfo.failWithMessage(s"$newName is an existing subject"))
           } else {
 
             val newSub = Skill(newName, oldSub.added, oldSub.description)
 
             // Updated subject list using the new subject name
-            val newSubjects = sessionData.subjects.filterNot(_.name == oldName) :+ newSub
+            val newSubjects = sessionData.skills.filterNot(_.name == oldName) :+ newSub
 
             // Updated session data using the new subject name
             val newSessions = sessionData.sessions.map(session =>
@@ -338,10 +338,10 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
         // Refactor this if-else sequence using find to get references to the two subjects
         if (data.status.isStudying) Future(ResultInfo.failWithMessage("Can't merge while studying"))
 
-        else data.subjects.find(_.name == absorbed).fold(
+        else data.skills.find(_.name == absorbed).fold(
           Future(ResultInfo.failWithMessage(s"$absorbed is an invalid subject"))
         )(absorbedSub => {
-          data.subjects.find(_.name == absorbing).fold(
+          data.skills.find(_.name == absorbing).fold(
             Future(ResultInfo.failWithMessage(s"$absorbing is an invalid subject"))
           )(absorbingSub => {
 
@@ -350,7 +350,7 @@ class Sessions(protected val mongoApi: ReactiveMongoApi) {
             val newSubject = Skill(absorbingSub.name, minAdded, absorbingSub.description)
 
             // Updated subject vector without the absorbed subject name
-            val newSubjects = data.subjects.filterNot(s => s.name == absorbed || s.name == absorbing) :+ newSubject
+            val newSubjects = data.skills.filterNot(s => s.name == absorbed || s.name == absorbing) :+ newSubject
 
             // Updated session vector without the absorbed subject name
             val newSessions = data.sessions.map(session =>

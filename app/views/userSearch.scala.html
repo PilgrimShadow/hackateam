@@ -27,7 +27,7 @@
     <script src="@routes.Assets.at("/javascripts/moment.js")"></script>
     <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
 
-    <script src="@routes.Assets.at("/javascripts/JournalEntryList.js")"></script>
+    <script src="@routes.Assets.at("/javascripts/UserList.js")"></script>
     <script src="@routes.Assets.at("/javascripts/FormHandlers.js")"></script>
 
     <script>
@@ -38,12 +38,9 @@
 
                 let searchText = $('#journal-search-text');
 
-                // Set up the handler for journal entry submission
-                submitWithGeo("#journal-entry-form", "@routes.JournalEntries.addJournalEntry()");
-
                 $.ajax({
                     type: "get",
-                    url: "@controllers.routes.JournalEntries.getJournalEntries()",
+                    url: "@routes.Users.getUsers()",
                     dataType: "json",
                     success: function (responseData, textResponse, jqXHR) {
 
@@ -51,17 +48,17 @@
 
                         if (responseData['success'] === true) {
 
-                            let entryList = new JournalEntryList("past-journal-entries", responseData['payload']);
+                            let userList = new UserList("past-journal-entries", responseData['payload']);
 
-                            entryList.sort();
-                            entryList.display();
+                            //userList.sort();
+                            userList.display();
 
                             // Set up the handler for the journal search bar
                             searchText.keyup(function () {
                                 const searchTerm = searchText.val();
 
-                                entryList.filter(searchTerm);
-                                entryList.display();
+                                userList.skillSearch(searchTerm);
+                                userList.display();
                             });
                         } else {
                             console.log("There was a problem loading your journal entries")
