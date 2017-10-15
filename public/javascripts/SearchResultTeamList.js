@@ -1,6 +1,6 @@
 'use strict';
 
-function TeamList(elementId, teams) {
+function SearchResultTeamList(elementId, teams) {
 
     // The element Id containing the list
     this.elementId = elementId;
@@ -42,23 +42,13 @@ function TeamList(elementId, teams) {
             hackathon.classList.add('search-result-hackathon');
             hackathon.textContent = team['hackathon'];
 
+            let request = document.createElement('form');
+            request.classList.add('search-result-join');
+            request.innerHTML = '<input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit">Request to Join</button>';
+
             let about = document.createElement('div');
             about.classList.add('search-result-text');
             about.textContent = team['description'];
-
-            // The row of waiting users
-            let waiting = document.createElement('div');
-            team['waiting'].forEach((waiter) => {
-
-                let f = document.createElement('form');
-
-                f.innerHTML = '<input type="text" name="waiter" value="' + waiter + '" hidden><input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit" class="btn btn-default">' + waiter + '</button>';
-                submitInBackground(f, "/teams/accept", (responseData, formData) => {
-                    console.log(responseData);
-                });
-
-                waiting.append(f);
-            });
 
             let skills = document.createElement('div');
             skills.classList.add("search-result-skills");
@@ -66,50 +56,26 @@ function TeamList(elementId, teams) {
                 return "<span class='skill-bubble'>" + skill['name'].toLowerCase() + "</span>";
             }).join("");
 
-            let addSkill = document.createElement('form');
-            addSkill.classList.add('add-team-skill-form');
-            addSkill.innerHTML = '<input type="text" name="skillName"><input type="text" name="teamName" value="' +
-                team['name'] + '" hidden><button type="submit" hidden></button>';
-
             let joined = document.createElement('div');
             joined.classList.add('search-result-info');
             joined.textContent = "Formed: " + moment(team['formed']).format('YYYY-MM-DD');
 
-            // Handler for adding team skills
-            submitInBackground(addSkill, "/teams/addSkill", function (responseData, formData) {
+            // Handler for the membership request form
+            submitInBackground(request, "/teams/request", (responseData, formData) => {
                 console.log(responseData);
-                console.log(formData);
-
-                if (responseData['success'] === true) {
-
-                    document.createElement('div');
-
-                    // Add the new skill to the page
-                    formData.forEach((field) => {
-                        if (field['name'] === 'skillName') {
-                            skills.append(makeSkillBubble(field['value']));
-                        }
-                    });
-                } else {
-
-                }
-
-                // Reset the form
-                addSkill.reset();
             });
 
             // Assemble the element
-
             let top = document.createElement('div');
 
             top.append(teamname);
             top.append(hackathon);
             top.append(about);
+
             d.append(top);
             d.append(skills);
-            d.append(addSkill);
             d.append(joined);
-            d.append(waiting);
+            d.append(request);
 
             // Add element to page
             container.append(d);

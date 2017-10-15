@@ -126,19 +126,7 @@
                 success: function (data, textStatus, response) {
 
                     console.log(response.responseText);
-
                     console.log(data);
-
-                    if (data['payload']['isStudying']) {
-
-                        // Unhide the stop and cancel forms
-                        $("#study-stop-form").removeAttr("hidden");
-                        $("#study-cancel-form").removeAttr("hidden");
-                    } else {
-
-                        // Unhide the start form
-                        $("#study-start-form").removeAttr("hidden");
-                    }
                 }
             });
 
@@ -152,6 +140,7 @@
                     if (responseData['success']) {
                         let teamList = new TeamList("user-teams", responseData['payload']);
 
+                        teamList.sort();
                         teamList.display();
 
                         // Handler for the team submission form
@@ -179,6 +168,7 @@
                                         teamList.entries.push(teamInfo);
                                         teamList.resultSet.push(teamInfo);
 
+                                        teamList.sort();
                                         teamList.display();
 
                                     } else {

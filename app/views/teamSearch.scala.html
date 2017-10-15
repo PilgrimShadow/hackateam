@@ -10,13 +10,16 @@
 
                 <form id="team-search-form" class="search-form">
                     <label for="team-skill-search" class="sr-only">Search</label>
-                    <input type="text" name="search-text" id="team-skill-search" class="form-control text-search-input" placeholder="search for skills...">
+                    <input type="text" name="team-skill-search-input" id="team-skill-search" class="form-control text-search-input" placeholder="search for skills...">
 
                     <label for="team-description-search" class="sr-only">Search</label>
-                    <input type="text" name="search-text" id="team-description-search" class="form-control text-search-input" placeholder="search descriptions...">
+                    <input type="text" name="team-description-search-input" id="team-description-search" class="form-control text-search-input" placeholder="search descriptions...">
+
+                    <label for="team-hackathon-search" class="sr-only">Search</label>
+                    <input type="text" name="team-hackathon-search-input" id="team-hackathon-search" class="form-control text-search-input" placeholder="search hackathons...">
 
                     <label for="team-sort-button" class="sr-only"></label>
-                    <button type="button" id="team-sort-button">Sort</button>
+                    <button type="button" class="btn btn-default" id="team-sort-button">Recent</button>
                 </form>
 
                 <div id="team-search-result"></div>
@@ -29,7 +32,7 @@
     <script src="@routes.Assets.at("/javascripts/moment-timezone-10-20.js")"></script>
 
         <!-- Custom JS -->
-    <script src="@routes.Assets.at("/javascripts/TeamList.js")"></script>
+    <script src="@routes.Assets.at("/javascripts/SearchResultTeamList.js")"></script>
     <script src="@routes.Assets.at("/javascripts/FormHandlers.js")"></script>
 
     <script>
@@ -39,6 +42,18 @@
             // Set up handlers and initialize page
             $(function () {
 
+
+                // Load user skills
+                $.ajax({
+                    type: "get",
+                    url: "",
+                    dataType: "json",
+                    success: function (responseData) {
+
+                    }
+                });
+
+                // Load all unjoined teams
                 $.ajax({
                     type: "get",
                     url: "@routes.Teams.getUnjoinedTeams()",
@@ -49,31 +64,19 @@
 
                         if (responseData['success'] === true) {
 
-                            let teamList = new TeamList("team-search-result", responseData['payload']);
+                            let teamList = new SearchResultTeamList("team-search-result", responseData['payload']);
 
                             teamList.display();
 
-                            let t = $('team-skill-search');
+                            let f = $('#team-search-form');
 
-                            // Set up the handler for the journal search bar
-                            t.keyup(function () {
-
-                                teamList.skillSearch(t.val());
+                            $('.text-search-input').keyup(() => {
+                                teamList.search(f.serializeArray());
                                 teamList.display();
                             });
 
-                            let s = $('#team-description-search');
-
-                            s.keyup(function () {
-
-                                teamList.descriptionSearch(s.val());
-                                teamList.display();
-                            });
-
-                            let b = $('#team-sort-button');
-
-                            b.click(function () {
-
+                            let d = $('#team-sort-button');
+                            d.click(function () {
                                 teamList.sort();
                                 teamList.display();
                             });

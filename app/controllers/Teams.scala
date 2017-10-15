@@ -28,7 +28,7 @@ import play.modules.reactivemongo.{MongoController, ReactiveMongoApi, ReactiveMo
 class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   extends Controller with MongoController with ReactiveMongoComponents {
 
-  protected val todo = new models.Teams(reactiveMongoApi)
+  protected val teams = new models.Teams(reactiveMongoApi)
 
   /**
     * Add a todo item for a username
@@ -43,9 +43,65 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         _ => invalidFormResponse,
         form => {
 
-          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(), Vector(username), Vector[Skill]())
+          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(),
+            Vector(username), Vector(), Vector[Skill]())
 
-          todo.addTeam(t).map(result => Ok(result.toJson))
+          teams.addTeam(t).map(result => Ok(result.toJson))
+        }
+      )
+    })
+  }
+
+  /**
+    * Add a user to a team
+    *
+    * @return
+    */
+  def addUserToTeam = Action.async { implicit request =>
+
+    withUsername(username => {
+
+      JoinTeamForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
+
+          teams.addUserToTeam(username, goodForm.teamname).map(resInfo => Ok(resInfo.toJson))
+        }
+      )
+
+    })
+  }
+
+  /**
+    * Request membership in a team
+    *
+    * @return
+    */
+  def requestMembership = Action.async { implicit request =>
+
+    withUsername(username => {
+
+      RequestMembershipForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
+          teams.requestMembership(username, goodForm.teamname).map(resInfo => Ok(resInfo.toJson))
+        }
+      )
+    })
+  }
+
+  /**
+    *
+    * @return
+    */
+  def acceptMembership = Action.async { implicit request =>
+
+    withUsername(username => {
+
+      AcceptMemberForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
+          teams.acceptMember(username, goodForm.waiter, goodForm.teamname).map(resInfo => Ok(resInfo.toJson))
         }
       )
     })
@@ -66,7 +122,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
 
           val s = Skill(goodForm.skillName, System.currentTimeMillis(), "")
 
-          todo.addSkill(username, goodForm.teamName, s).map(resInfo => Ok(resInfo.toJson))
+          teams.addSkill(username, goodForm.teamName, s).map(resInfo => Ok(resInfo.toJson))
         }
       )
     })
@@ -87,7 +143,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
 
           BSONObjectID.parse(form.id).toOption.fold(
             Future(Ok(ResultInfo.failWithMessage("invalid object id").toJson))
-          )(oid => todo.deleteTodoItem(username, oid).map(result => Ok(result.toJson)))
+          )(oid => teams.deleteTodoItem(username, oid).map(result => Ok(result.toJson)))
         }
       )
     })
@@ -106,7 +162,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         _ => invalidFormResponse,
         form => {
 
-          todo.completeTodoItem(username, form.id, Point(form.longitude, form.latitude)).map(
+          teams.completeTodoItem(username, form.id, Point(form.longitude, form.latitude)).map(
             result => Ok(result.toJson)
           )
         }
@@ -123,7 +179,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   def getUnjoinedTeams = Action.async { implicit request =>
 
     withUsername(username =>
-      todo.getUnjoinedTeams(username).map(resInfo => Ok(resInfo.toJson))
+      teams.getUnjoinedTeams(username).map(resInfo => Ok(resInfo.toJson))
     )
   }
 
@@ -135,7 +191,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   def getTeamsForUsername = Action.async { implicit request =>
 
     withUsername(username => {
-      todo.getTeams(username).map(resInfo => Ok(resInfo.toJson))
+      teams.getTeams(username).map(resInfo => Ok(resInfo.toJson))
     })
   }
 }

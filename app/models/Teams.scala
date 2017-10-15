@@ -47,6 +47,87 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
   }
 
   /**
+    * Add a user to a team
+    *
+    * @param username The user to add
+    * @param teamname The team to which to add
+    * @return
+    */
+  def addUserToTeam(username: String, teamname: String): Future[ResultInfo[String]] = {
+
+    val s = BSONDocument(
+      "name" -> teamname,
+      "members" -> BSONDocument("$ne" -> username)
+    )
+
+    val u = BSONDocument(
+      "$push" -> BSONDocument(
+        "members" -> username
+      )
+    )
+
+    teamBSON.flatMap(_.update(s, u)).map(
+      result =>
+        if (result.n > 0) ResultInfo.succeedWithMessage("added user to team")
+        else ResultInfo.failWithMessage("failed to add user to team")
+    )
+  }
+
+  def requestMembership(username: String, teamname: String): Future[ResultInfo[String]] = {
+
+    val s = BSONDocument(
+      "name" -> teamname,
+      "members" -> BSONDocument("$ne" -> username),
+      "waiting" -> BSONDocument("$ne" -> username)
+    )
+
+    val u = BSONDocument(
+      "$push" -> BSONDocument(
+        "waiting" -> username
+      )
+    )
+
+    teamBSON.flatMap(_.update(s, u)).map(
+      result =>
+        if (result.n > 0) ResultInfo.succeedWithMessage("added user to waiting list")
+        else ResultInfo.failWithMessage("failed to add user to waiting list")
+    )
+  }
+
+  /**
+    * Accept a member from a waiting list
+    *
+    * @param username The user granting membership
+    * @param waiter   The user waiting for membership
+    * @param teamname The team being joined
+    * @return
+    */
+  def acceptMember(username: String, waiter: String, teamname: String): Future[ResultInfo[String]] = {
+
+    val s = BSONDocument(
+      "name" -> teamname,
+      "members" -> username,
+      "waiting" -> waiter
+    )
+
+    val u = BSONDocument(
+      "$pull" -> BSONDocument(
+        "waiting" -> waiter
+      ),
+      "$push" -> BSONDocument(
+        "members" -> waiter
+      )
+    )
+
+    teamBSON.flatMap(_.update(s, u)).map(
+      result =>
+        if (result.n > 0) ResultInfo.succeedWithMessage("added user to team")
+        else ResultInfo.failWithMessage("failed to add user to team")
+    )
+
+  }
+
+  /**
     * Add a skill to the given team
     *
     * @param username The user adding the skill
@@ -58,7 +139,8 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
 
     val s = BSONDocument(
       "name" -> teamName,
-      "members" -> username
+      "members" -> username,
+      "skills.name" -> BSONDocument("$ne" -> skill.name)
     )
 
     val u = BSONDocument(

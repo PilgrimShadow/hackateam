@@ -104,6 +104,12 @@ POST        /todo/completeTodoItem          controllers.Teams.completeTodoItem()
 # Get all teams
 GET         /teams/get                      controllers.Teams.getUnjoinedTeams()
 
+# Request membersip in a team
+POST        /teams/request                  controllers.Teams.requestMembership()
+
+# Accept a member into a team
+POST        /teams/accept                   controllers.Teams.acceptMembership()
+
 # Get teams for the user
 GET         /teams/myTeams                  controllers.Teams.getTeamsForUsername()
 
