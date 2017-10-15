@@ -1,7 +1,7 @@
 package models
 
 // Standard Library
-import constructs.Point
+import constructs.{Point, TeamMessage}
 import play.api.libs.json._
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.collection.JSONCollection
@@ -138,6 +138,33 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
 
   }
 
+  /**
+    * Add a message to the team channel
+    *
+    * @param teamname The team to which to add
+    * @param message  The message to add
+    * @return
+    */
+  def addTeamMessage(teamname: String, message: TeamMessage): Future[ResultInfo[String]] = {
+
+    val s = BSONDocument(
+      "name" -> teamname,
+      "members" -> message.username
+    )
+
+    val u = BSONDocument(
+      "$push" -> BSONDocument(
+        "messages" -> message
+      )
+    )
+
+    teamBSON.flatMap(_.update(s, u)).map(
+      result =>
+        if (result.n > 0) ResultInfo.succeedWithMessage("added message to team")
+        else ResultInfo.failWithMessage("failed to add message to team")
+    )
+
+  }
 
   /**
     * Add a skill to the given team

@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import reactivemongo.bson.BSONDocument
 
 case class Team(name: String, hackathon: String, description: String, repoLink: String, formed: Long,
-                members: Vector[String], waiting: Vector[String], skills: Vector[Skill])
+                members: Vector[String], waiting: Vector[String], skills: Vector[Skill], messages: Vector[TeamMessage])
 
 object Team {
 

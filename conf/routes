@@ -104,6 +104,9 @@ POST        /teams/request                  controllers.Teams.requestMembership(
 # Accept a member into a team
 POST        /teams/accept                   controllers.Teams.acceptMembership()
 
+# Add a message to the team board
+POST        /teams/addMessage               controllers.Teams.addTeamMessage()
+
 # Get teams for the user
 GET         /teams/myTeams                  controllers.Teams.getTeamsForUsername()
 

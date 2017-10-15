@@ -9,7 +9,7 @@ import reactivemongo.bson.BSONObjectID
 import scala.concurrent.Future
 
 // Project
-import constructs.ResultInfo
+import constructs.{ResultInfo, TeamMessage}
 import forms._
 
 // Play Framework
@@ -44,7 +44,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         form => {
 
           val t = Team(form.name, form.hackathon, form.description, form.repoLink, System.currentTimeMillis(),
-            Vector(username), Vector(), Vector[Skill]())
+            Vector(username), Vector(), Vector(), Vector())
 
           teams.addTeam(t).map(result => Ok(result.toJson))
         }
@@ -106,6 +106,29 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
       )
     })
   }
+
+
+  /**
+    * Add a message to the team channel
+    *
+    * @return
+    */
+  def addTeamMessage = Action.async { implicit request =>
+
+    withUsername(username => {
+
+      AddTeamMessageForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
+
+          val t = TeamMessage(username, goodForm.text, System.currentTimeMillis())
+
+          teams.addTeamMessage(goodForm.teamname, t).map(resInfo => Ok(resInfo.toJson))
+        }
+      )
+    })
+  }
+
 
   /**
     * Add a team skill

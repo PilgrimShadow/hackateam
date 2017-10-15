@@ -143,7 +143,7 @@
                 success: function (responseData, textStatus, response) {
 
                     if (responseData['success']) {
-                        let teamList = new TeamList("user-teams", responseData['payload']);
+                        let teamList = new TeamList("user-teams", responseData['payload'], "@username");
 
                         teamList.sort();
                         teamList.display();
@@ -160,6 +160,7 @@
                                         teamInfo['skills'] = [];
                                         teamInfo['members'] = "@username";
                                         teamInfo['waiting'] = [];
+                                        teamInfo['messages'] = [];
 
                                         // Add proper form fields
                                         formData.forEach((field) => {

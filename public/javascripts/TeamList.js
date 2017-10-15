@@ -1,9 +1,11 @@
 'use strict';
 
-function TeamList(elementId, teams) {
+function TeamList(elementId, teams, username = "") {
 
     // The element Id containing the list
     this.elementId = elementId;
+
+    this.username = username;
 
     // The list of journal entries
     this.entries = teams.slice();
@@ -55,6 +57,12 @@ function TeamList(elementId, teams) {
                 f.innerHTML = '<input type="text" name="waiter" value="' + waiter + '" hidden><input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit" class="btn btn-default">' + waiter + '</button>';
                 submitInBackground(f, "/teams/accept", (responseData, formData) => {
                     console.log(responseData);
+
+                    if (responseData['success'] === true) {
+                        f.remove();
+                    } else {
+
+                    }
                 });
 
                 waiting.append(f);
@@ -74,6 +82,55 @@ function TeamList(elementId, teams) {
             let joined = document.createElement('div');
             joined.classList.add('search-result-info');
             joined.textContent = "Formed: " + moment(team['formed']).format('YYYY-MM-DD');
+
+            let messageHeader = document.createElement('div');
+            messageHeader.classList.add('message-list-header');
+            messageHeader.innerHTML = '<i class="fa fa-caret-down" aria-hidden="true"></i><span class="message-list-header-text">Messages</span>';
+
+            // List of team messages
+            let messageList = document.createElement('div');
+            messageList.classList.add('team-message-list');
+            team['messages'].forEach((message) => {
+
+                let m = document.createElement('div');
+                m.innerHTML = '<span class="team-message-sender">' + message['username'] + '</span><span class="team-message-text">' + message['text'] + '</span>'
+
+                messageList.append(m);
+            });
+
+            // Form to leave a message on the team chat board
+            let messageField = document.createElement('form');
+            messageField.classList.add('message-entry-form');
+            messageField.innerHTML = '<input type="text" class="team-message-input" name="text" placeholder="Leave a message..."><input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit" hidden></button>';
+
+            // Handler for adding team messages
+            submitInBackground(messageField, "/teams/addMessage", (responseData, formData) => {
+                console.log(formData);
+                console.log(responseData);
+
+                if (responseData['success'] === true) {
+
+                    // Reset the form on success
+                    messageField.reset();
+
+                    let mText;
+
+                    formData.forEach((field) => {
+
+                        if (field['name'] === 'text') {
+                            mText = field['value'];
+                        }
+
+                    });
+
+                    let m = document.createElement('div');
+                    m.innerHTML = '<span class="team-message-sender">' + this.username + '</span><span class="team-message-text">' + mText + '</span>'
+                    messageList.append(m);
+
+                } else {
+
+                }
+            });
 
             // Handler for adding team skills
             submitInBackground(addSkill, "/teams/addSkill", function (responseData, formData) {
@@ -101,15 +158,28 @@ function TeamList(elementId, teams) {
             // Assemble the element
 
             let top = document.createElement('div');
-
             top.append(teamname);
             top.append(hackathon);
             top.append(about);
+
+            let messaging = document.createElement('div');
+            $(messaging).attr('hidden', true);
+            messaging.append(messageList);
+            messaging.append(messageField);
+
+            messageHeader.onclick = () => {
+                const elem = $(messaging);
+
+                elem.attr("hidden", !elem.attr("hidden"));
+            };
+
             d.append(top);
             d.append(skills);
             d.append(addSkill);
             d.append(joined);
             d.append(waiting);
+            d.append(messageHeader);
+            d.append(messaging);
 
             // Add element to page
             container.append(d);

@@ -1,7 +1,4 @@
 
-#team-sort-button {
-
-}
 
 .team-repo-link {
     margin-left: 5px;
@@ -60,6 +57,29 @@
 
 .search-form {
     padding-bottom: 20px;
+}
+
+.team-message-text {
+    margin-left: 5px;
+}
+
+.team-message-sender {
+    color: #709073;
+}
+
+.message-list-header-text {
+    margin-left: 5px;
+}
+
+.team-message-input {
+
+    background: transparent;
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 
 #user-search-form {

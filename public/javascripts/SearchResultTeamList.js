@@ -44,7 +44,7 @@ function SearchResultTeamList(elementId, teams) {
 
             let request = document.createElement('form');
             request.classList.add('search-result-join');
-            request.innerHTML = '<input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit">Request to Join</button>';
+            request.innerHTML = '<input type="text" name="teamname" value="' + team['name'] + '" hidden><button type="submit" class="btn btn-default">Request to Join</button>';
 
             let about = document.createElement('div');
             about.classList.add('search-result-text');
