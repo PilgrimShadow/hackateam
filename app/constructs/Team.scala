@@ -3,7 +3,7 @@ package constructs
 import play.api.libs.json.Json
 import reactivemongo.bson.BSONDocument
 
-case class Team(name: String, hackathon: String, description: String, formed: Long,
+case class Team(name: String, hackathon: String, description: String, repoLink: String, formed: Long,
                 members: Vector[String], waiting: Vector[String], skills: Vector[Skill])
 
 object Team {

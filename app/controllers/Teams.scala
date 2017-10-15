@@ -43,7 +43,7 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         _ => invalidFormResponse,
         form => {
 
-          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(),
+          val t = Team(form.name, form.hackathon, form.description, form.repoLink, System.currentTimeMillis(),
             Vector(username), Vector(), Vector[Skill]())
 
           teams.addTeam(t).map(result => Ok(result.toJson))

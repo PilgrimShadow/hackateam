@@ -3,6 +3,10 @@
 
 }
 
+.team-repo-link {
+    margin-left: 5px;
+}
+
 .search-result-info {
     display: inline-block;
     float: right;

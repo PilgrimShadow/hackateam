@@ -35,37 +35,6 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
   // Regex defining a valid subject description
   protected val descriptionRegex = "\\A[\\w\\s]{1,256}\\z".r
 
-  /**
-    * Invoke the model layer to start a new study session.
-    *
-    * @return
-    */
-  def startSession = Action.async { implicit request =>
-
-    withUsername(username => {
-      SessionStartForm.startForm.bindFromRequest()(request).fold(
-        _ => invalidFormResponse,
-        form => sessions.startSession(username, form.subject).map(resultInfo => Ok(resultInfo.toJson))
-      )
-    })
-  }
-
-
-  /**
-    * Invoke the model layer to stop the current study session
-    *
-    * @return
-    */
-  def stopSession = Action.async { implicit request =>
-
-    withUsername(username => {
-      SessionStopForm.stopForm.bindFromRequest()(request).fold(
-        _ => invalidFormResponse,
-        form => sessions.stopSession(username, form.message).map(resultInfo => Ok(resultInfo.toJson))
-      )
-    })
-  }
-
 
   /**
     * Invoke the model layer to abort the current study session.

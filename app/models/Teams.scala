@@ -31,6 +31,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
 
   protected def teamJSON: Future[JSONCollection] = mongoApi.database.map(_.collection("teams"))
 
+
   /**
     * Add a new team to the system
     *
@@ -45,6 +46,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
         else ResultInfo.failWithMessage("failed to add item")
     )
   }
+
 
   /**
     * Add a user to a team
@@ -73,6 +75,14 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
     )
   }
 
+
+  /**
+    * Request membership in a team
+    *
+    * @param username
+    * @param teamname
+    * @return
+    */
   def requestMembership(username: String, teamname: String): Future[ResultInfo[String]] = {
 
     val s = BSONDocument(
@@ -93,6 +103,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
         else ResultInfo.failWithMessage("failed to add user to waiting list")
     )
   }
+
 
   /**
     * Accept a member from a waiting list
@@ -127,6 +138,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
 
   }
 
+
   /**
     * Add a skill to the given team
     *
@@ -156,6 +168,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
     )
 
   }
+
 
   /**
     *
@@ -202,6 +215,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
     )
   }
 
+
   /**
     * Get all teams
     *
@@ -219,6 +233,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
       )
     )
   }
+
 
   /**
     * Get all teams containing the user

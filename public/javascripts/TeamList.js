@@ -36,7 +36,7 @@ function TeamList(elementId, teams) {
 
             let teamname = document.createElement('div');
             teamname.classList.add("search-result-title");
-            teamname.textContent = team['name'];
+            teamname.innerHTML = '<span>' + team['name'] + '</span><a class="team-repo-link" href="' + team['repoLink'] + '" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
 
             let hackathon = document.createElement('div');
             hackathon.classList.add('search-result-hackathon');
