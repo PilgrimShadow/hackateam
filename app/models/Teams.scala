@@ -17,7 +17,7 @@ import play.modules.reactivemongo.json._
 import reactivemongo.api.collections.bson.BSONCollection
 
 // Project
-import constructs.{ResultInfo, Team}
+import constructs.{ResultInfo, Team, Skill}
 import helpers.Selectors.usernameAndID
 
 /**
@@ -32,17 +32,47 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
   protected def teamJSON: Future[JSONCollection] = mongoApi.database.map(_.collection("teams"))
 
   /**
+    * Add a new team to the system
     *
-    * @param item
+    * @param team The team to add
     * @return
     */
-  def addTeam(item: Team): Future[ResultInfo[String]] = {
+  def addTeam(team: Team): Future[ResultInfo[String]] = {
 
-    teamBSON.flatMap(_.insert(item)).map(
+    teamBSON.flatMap(_.insert(team)).map(
       result =>
         if (result.ok) ResultInfo.succeedWithMessage("added item to list")
         else ResultInfo.failWithMessage("failed to add item")
     )
+  }
+
+  /**
+    * Add a skill to the given team
+    *
+    * @param username The user adding the skill
+    * @param teamName The team name
+    * @param skill The skill to add
+    * @return
+    */
+  def addSkill(username: String, teamName: String, skill: Skill): Future[ResultInfo[String]] = {
+
+    val s = BSONDocument(
+      "name" -> teamName,
+      "members" -> username
+    )
+
+    val u = BSONDocument(
+      "$push" -> BSONDocument(
+        "skills" -> skill
+      )
+    )
+
+    teamBSON.flatMap(_.update(s, u)).map(
+      result =>
+        if (result.ok) ResultInfo.succeedWithMessage("added skill")
+        else ResultInfo.failWithMessage("failed to add skill")
+    )
+
   }
 
   /**
@@ -95,9 +125,11 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
     *
     * @return
     */
-  def getTeams(): Future[ResultInfo[List[JsObject]]] = {
+  def getUnjoinedTeams(username: String): Future[ResultInfo[List[JsObject]]] = {
 
-    val s = JsObject(Map[String, JsValue]())
+    val s = JsObject(Map(
+      "members" -> JsObject(Map("$ne" -> JsString(username)))
+    ))
 
     teamJSON.flatMap(
       _.find(s).cursor[JsObject]().collect[List]().map(

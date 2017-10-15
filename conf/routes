@@ -92,6 +92,9 @@ POST        /users/delete                   controllers.Users.deleteUser()
 # Add a team
 POST        /teams/add                      controllers.Teams.addTeam()
 
+# Add a team skill
+POST        /teams/addSkill                 controllers.Teams.addSkill()
+
 # Delete a todo item
 POST        /todo/deleteTodoItem            controllers.Teams.deleteTeam()
 
@@ -99,7 +102,7 @@ POST        /todo/deleteTodoItem            controllers.Teams.deleteTeam()
 POST        /todo/completeTodoItem          controllers.Teams.completeTodoItem()
 
 # Get all teams
-GET         /teams/get                      controllers.Teams.getTeams()
+GET         /teams/get                      controllers.Teams.getUnjoinedTeams()
 
 # Get teams for the user
 GET         /teams/myTeams                  controllers.Teams.getTeamsForUsername()

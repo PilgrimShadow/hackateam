@@ -3,8 +3,7 @@ package controllers
 // Standard Library
 import javax.inject.Inject
 
-import akka.actor.Status.Success
-import constructs.{CumulativeGoal, Point, Team, TodoItem}
+import constructs._
 import reactivemongo.bson.BSONObjectID
 
 import scala.concurrent.Future
@@ -44,9 +43,30 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         _ => invalidFormResponse,
         form => {
 
-          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(), Vector(username), Vector[String]())
+          val t = Team(form.name, form.hackathon, form.description, System.currentTimeMillis(), Vector(username), Vector[Skill]())
 
           todo.addTeam(t).map(result => Ok(result.toJson))
+        }
+      )
+    })
+  }
+
+  /**
+    * Add a team skill
+    *
+    * @return
+    */
+  def addSkill = Action.async { implicit request =>
+
+    withUsername(username => {
+
+      AddTeamSkillForm.form.bindFromRequest()(request).fold(
+        _ => invalidFormResponse,
+        goodForm => {
+
+          val s = Skill(goodForm.skillName, System.currentTimeMillis(), "")
+
+          todo.addSkill(username, goodForm.teamName, s).map(resInfo => Ok(resInfo.toJson))
         }
       )
     })
@@ -100,10 +120,10 @@ class Teams @Inject()(val reactiveMongoApi: ReactiveMongoApi)
     *
     * @return
     */
-  def getTeams = Action.async { implicit request =>
+  def getUnjoinedTeams = Action.async { implicit request =>
 
-    withUsername(_ =>
-      todo.getTeams().map(resInfo => Ok(resInfo.toJson))
+    withUsername(username =>
+      todo.getUnjoinedTeams(username).map(resInfo => Ok(resInfo.toJson))
     )
   }
 

@@ -7,6 +7,16 @@
     color: #707073;
 }
 
+.add-team-skill-form input {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.add-team-skill-form {
+    display: inline-block;
+}
+
 .search-result-title {
     font-size: 1.5em;
 }
@@ -19,6 +29,7 @@
 }
 
 .search-result-skills {
+    display: inline-block;
     margin: 5px 0;
 }
 

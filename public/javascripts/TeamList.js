@@ -1,22 +1,31 @@
 'use strict';
 
-function TeamList(elementId, entries) {
-
+function TeamList(elementId, teams) {
 
     // The element Id containing the list
     this.elementId = elementId;
 
     // The list of journal entries
-    this.entries = entries;
+    this.entries = teams;
 
-    this.resultSet = entries;
+    this.resultSet = teams;
 
     // Display the entry list in its current state
     this.display = function () {
 
         let container = document.getElementById(elementId);
 
+        // Clear the container before displaying
         container.innerHTML = "";
+
+        let makeSkillBubble = (skillName) => {
+
+            let elem = document.createElement('span');
+            elem.classList.add("skill-bubble");
+            elem.textContent = skillName.toLowerCase();
+
+            return elem;
+        };
 
         // Create and append all elements
         this.resultSet.forEach((team) => {
@@ -35,18 +44,46 @@ function TeamList(elementId, entries) {
             let skills = document.createElement('div');
             skills.classList.add("search-result-skills");
             skills.innerHTML = team['skills'].map(function (skill) {
-                return "<span class='skill-bubble'>" + skill + "</span>";
+                return "<span class='skill-bubble'>" + skill['name'].toLowerCase() + "</span>";
             }).join("");
+
+            let addSkill = document.createElement('form');
+            addSkill.classList.add('add-team-skill-form');
+            addSkill.innerHTML = '<input type="text" name="skillName"><input type="text" name="teamName" value="' +
+                team['name'] + '" hidden><button type="submit" hidden></button>';
 
             let joined = document.createElement('div');
             joined.classList.add('search-result-info');
             joined.textContent = "Formed: " + moment(team['formed']).format('YYYY-MM-DD');
 
+            // Handler for adding team skills
+            submitInBackground(addSkill, "/teams/addSkill", function (responseData, formData) {
+                console.log(responseData);
+                console.log(formData);
+
+                if (responseData['success'] === true) {
+
+                    document.createElement('div');
+
+                    // Add the new skill to the page
+                    formData.forEach((field) => {
+                        if (field['name'] === 'skillName') {
+                            skills.append(makeSkillBubble(field['value']));
+                        }
+                    });
+                } else {
+
+                }
+
+                // Reset the form
+                addSkill.reset();
+            });
 
             // Assemble the element
             d.append(teamname);
             d.append(about);
             d.append(skills);
+            d.append(addSkill);
             d.append(joined);
 
             // Add element to page
@@ -94,7 +131,7 @@ function TeamList(elementId, entries) {
         this.resultSet = this.entries.filter(function (team) {
 
             let skillNames = team['skills'].map(function (skill) {
-                return skill.toLowerCase();
+                return skill['name'].toLowerCase();
             });
 
             console.log(skillNames);
@@ -103,7 +140,6 @@ function TeamList(elementId, entries) {
 
             return intersection.length > 0;
         });
-
     };
 
     // Find all entries near the given coordinates

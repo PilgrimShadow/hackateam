@@ -25,7 +25,7 @@ function submitInBackground(formSelector, submitURL, successCallback = () => nul
             data: formData,
             dataType: "json",
             success: function (responseData, textStatus, jqXHR) {
-                successCallback(responseData);
+                successCallback(responseData, formData);
             }
         });
     })
