@@ -6,9 +6,10 @@ function TeamList(elementId, teams) {
     this.elementId = elementId;
 
     // The list of journal entries
-    this.entries = teams;
+    this.entries = teams.slice();
 
-    this.resultSet = teams;
+    // The results of the most recent search
+    this.resultSet = this.entries.slice();
 
     // Display the entry list in its current state
     this.display = function () {
@@ -91,14 +92,20 @@ function TeamList(elementId, teams) {
         });
     };
 
-    //
+    // Add a team to the list
+    this.addTeam = function (teamInfo) {
+
+        this.entries.push(teamInfo);
+    };
+
+    // Sort the teams by their formation date
     this.sort = function (oldestFirst = false) {
 
         const factor = (oldestFirst === true) ? -1 : 1;
 
         this.resultSet.sort((a, b) => {
 
-            return factor * Math.sign(b.timestamp - a.timestamp);
+            return factor * Math.sign(b['formed'] - a['formed']);
         });
     };
 

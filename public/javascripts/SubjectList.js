@@ -14,7 +14,7 @@ function SubjectList(elementId, subjects) {
     this.elementId = elementId;
 
     // The list of subjects
-    this.subjects = subjects;
+    this.subjects = subjects.slice();
 
     /**
      * Display the subject list

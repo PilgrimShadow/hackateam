@@ -51,7 +51,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
     *
     * @param username The user adding the skill
     * @param teamName The team name
-    * @param skill The skill to add
+    * @param skill    The skill to add
     * @return
     */
   def addSkill(username: String, teamName: String, skill: Skill): Future[ResultInfo[String]] = {
@@ -69,7 +69,7 @@ class Teams(protected val mongoApi: ReactiveMongoApi) {
 
     teamBSON.flatMap(_.update(s, u)).map(
       result =>
-        if (result.ok) ResultInfo.succeedWithMessage("added skill")
+        if (result.n > 0) ResultInfo.succeedWithMessage("added skill")
         else ResultInfo.failWithMessage("failed to add skill")
     )
 

@@ -1,34 +1,5 @@
 @(username: String)(implicit messages: Messages)
 
-@loadingDots() = {
-    <p class="loading-dots">
-        <span>&#11044</span>
-        <span>&#11044</span>
-        <span>&#11044</span>
-        <span>&#11044</span>
-    </p>
-}
-
-@panelDataBlock(title: String, id: String) = {
-    <div class="panel-data-block">
-        <u class="data-block-title">@title</u>
-        <br>
-        <div id="@id">
-        @loadingDots()
-        </div>
-    </div>
-}
-
-@plotHolder(id: String, classes: List[String] = List()) = {
-
-    <div class="padded-plot">
-        <div id="@id" class="chart-container loading-icon @classes.mkString(" ")">
-        @loadingDots()
-        </div>
-    </div>
-
-}
-
 @loggedInTemplate("Home") {
     <link href="@routes.Assets.at("stylesheets/journal.css")" rel=stylesheet type="text/css">
 } {
@@ -75,7 +46,7 @@
                 <form id="add-subject-form" class="study-control-form" hidden>
 
                     <div class="form-group">
-                        <input id="add-subject-subject-input" class="form-control study-control-input" name="subject" placeholder="New Subject" title="subject name" type="text">
+                        <input id="add-subject-subject-input" class="form-control study-control-input" name="name" placeholder="New Skill" title="subject name" type="text">
                     </div>
 
                     <div class="form-group">
@@ -182,6 +153,39 @@
                         let teamList = new TeamList("user-teams", responseData['payload']);
 
                         teamList.display();
+
+                        // Handler for the team submission form
+                        submitInBackground("#team-entry-form", "@routes.Teams.addTeam()",
+                                function (responseData, formData) {
+
+                                    if (responseData['success'] === true) {
+
+                                        let teamInfo = {};
+
+                                        teamInfo['formed'] = responseData['timestamp'];
+                                        teamInfo['skills'] = [];
+                                        teamInfo['members'] = "@username";
+
+                                        // Add proper form fields
+                                        formData.forEach((field) => {
+                                            teamInfo[field['name']] = field['value'];
+                                        });
+
+                                        // Clear the form
+                                        document.querySelector("#team-entry-form").reset();
+
+                                        console.log(teamInfo);
+
+                                        teamList.entries.push(teamInfo);
+                                        teamList.resultSet.push(teamInfo);
+
+                                        teamList.display();
+
+                                    } else {
+
+                                    }
+
+                                });
                     } else {
 
                     }
@@ -194,12 +198,6 @@
 
             $(function () {
 
-                // Handler for the team submission form
-                submitInBackground("#team-entry-form", "@routes.Teams.addTeam()",
-                        function (responseData) {
-                            document.querySelector("#team-entry-form").reset();
-                        });
-
                 // Handler for the about message update form
                 submitInBackground("#update-about-form", "@routes.Users.updateAboutMessage()",
                         function (data) {
@@ -209,177 +207,6 @@
                                 //
                             }
                         });
-
-                $("#study-start-form").on("submit", function (e) {
-
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
-
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.startSession()",
-                        data: $("#study-start-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
-
-                            if (request.status === 200) {
-
-                                console.log(request.responseText);
-
-                                let data = {};
-
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
-
-                                if (data['success'] === true) {
-
-                                    // TODO: Return the session start time in the payload
-
-                                    // Unhide the stop and cancel forms
-                                    $("#study-stop-form").removeAttr("hidden");
-                                    $("#study-cancel-form").removeAttr("hidden");
-
-                                    // Hide and clear the start form
-                                    $("#study-start-form").attr("hidden", true);
-                                    $("#study-start-subject-input").val("");
-                                } else {
-
-                                }
-                            }
-                        }
-                    });
-                });
-            });
-
-
-            $(function () {
-                $("#study-stop-form").on("submit", function (e) {
-
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
-
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.stopSession()",
-                        data: $("#study-stop-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
-
-                            if (request.status === 200) {
-
-                                console.log(request.responseText);
-
-                                let data = {};
-
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
-
-                                if (data['success'] === true) {
-
-                                    $("#study-stop-message-input").val("");
-
-                                    $("#study-start-form").removeAttr("hidden");
-                                    $("#study-stop-form").attr("hidden", true);
-                                    $("#study-cancel-form").attr("hidden", true);
-                                } else {
-
-                                }
-                            }
-                        }
-                    });
-                });
-            });
-
-
-            $(function () {
-                $("#study-cancel-form").on("submit", function (e) {
-
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
-
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.cancelSession()",
-                        data: $("#study-cancel-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
-
-                            if (request.status === 200) {
-
-                                console.log(request.responseText);
-
-                                let data = {};
-
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
-
-                                if (data['success'] === true) {
-                                    console.log(data);
-                                    $("#study-stop-message-input").val("");
-
-                                    $("#study-start-form").removeAttr("hidden");
-                                    $("#study-stop-form").attr("hidden", true);
-                                    $("#study-cancel-form").attr("hidden", true);
-                                } else {
-
-                                }
-                            }
-                        }
-                    });
-                });
-            });
-
-
-            $(function () {
-                $("#add-subject-form").on("submit", function (e) {
-
-                    // TODO: prevent fields from clearing
-                    e.preventDefault();
-
-                    $.ajax({
-                        type: "post",
-                        url: "@controllers.routes.Sessions.addSkill()",
-                        data: $("#add-subject-form").serialize(),
-                        dataType: "json",
-                        complete: function (request, textStatus) {
-
-                            if (request.status === 200) {
-
-                                console.log(request.responseText);
-
-                                let data = {};
-
-                                // Parse the response text as JSON
-                                try {
-                                    data = JSON.parse(request.responseText);
-                                } catch (e) {
-                                    console.log("Error parsing response")
-                                }
-
-                                if (data['success'] === true) {
-                                    console.log(data);
-                                    // Clear the form inputs
-                                    $("#add-subject-subject-input").val("");
-                                    $("#add-subject-description-input").val("");
-                                } else {
-                                    // Handle errors: subject already added, etc.
-                                }
-                            }
-                        }
-                    });
-                });
             });
 
             $(function () {
@@ -538,202 +365,39 @@
                 dataType: "json",
                 success: function (data, textStatus, response) {
 
-                    // Add the current session to the session array
-                    if (data.status.isStudying) {
-                        data.sessions.push({
-                            "subject": data.status.subject,
-                            "startTime": data.status.start,
-                            "endTime": new Date().getTime()
-                        });
-                    }
-
-
                     const subjectList = new SubjectList("subject-list-container", data['skills']);
 
                     subjectList.display();
 
-                    // Highchart default theme using CSS chart styling
-                    let styledTheme = {
+                    // Handler for the team submission form
+                    submitInBackground("#add-subject-form", "@routes.Sessions.addSkill()",
+                            function (responseData, formData) {
 
-                        title: {
-                            align: 'left',
-                            margin: 50,
-                            x: 20,
-                            y: 40
-                        },
+                                if (responseData['success'] === true) {
 
-                        subtitle: {
-                            align: 'left',
-                            x: 20,
-                            y: 60
-                        },
+                                    let skillInfo = {};
 
-                        yAxis: {
-                            tickWidth: 1,
-                            title: {
-                                text: null,
-                                align: "middle",
-                            }
-                        },
+                                    skillInfo['added'] = responseData['timestamp'];
 
-                        tooltip: {
-                            valueDecimals: 2,
-                            hideDelay: 150
-                        },
+                                    // Add proper form fields
+                                    formData.forEach((field) => {
+                                        skillInfo[field['name']] = field['value'];
+                                    });
 
-                        plotOptions: {
+                                    // Clear the form
+                                    document.querySelector("#add-subject-form").reset();
 
-                            series: {
-                                dataLabels: {
-                                    color: '#B0B0B3'
-                                },
-                                marker: {
-                                    lineColor: '#333'
+                                    console.log(skillInfo);
+
+                                    subjectList.subjects.push(skillInfo);
+
+                                    subjectList.display();
+
+                                } else {
+
                                 }
-                            },
 
-                            area: {
-                                marker: {
-                                    radius: 0
-                                },
-
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                }
-                            },
-
-                            areaspline: {
-                                marker: {
-                                    radius: 0
-                                },
-                                lineWidth: 1,
-                                states: {
-                                    hover: {
-                                        lineWidth: 1
-                                    }
-                                }
-                            },
-
-                            column: {
-                                color: "rgba(58, 127, 89, .9)",
-                                dataLabels: {
-                                    enabled: false
-                                },
-                                borderWidth: 0
-                            },
-
-                            bar: {
-                                borderWidth: 0
-                            }
-                        },
-
-                        drilldown: {
-                            activeAxisLabelStyle: {
-                                color: '#F0F0F3'
-                            },
-                            activeDataLabelStyle: {
-                                color: '#F0F0F3'
-                            }
-                        },
-
-                        navigation: {
-                            buttonOptions: {
-                                symbolStroke: '#DDDDDD',
-                                theme: {
-                                    fill: '#505053'
-                                }
-                            }
-                        },
-
-                        // scroll charts
-                        rangeSelector: {
-                            buttonTheme: {
-                                fill: '#505053',
-                                stroke: '#000000',
-                                style: {
-                                    color: '#CCC'
-                                },
-                                states: {
-                                    hover: {
-                                        fill: '#707073',
-                                        stroke: '#000000',
-                                        style: {
-                                            color: 'white'
-                                        }
-                                    },
-                                    select: {
-                                        fill: '#000003',
-                                        stroke: '#000000',
-                                        style: {
-                                            color: 'white'
-                                        }
-                                    }
-                                }
-                            },
-                            inputBoxBorderColor: '#505053',
-
-                            inputStyle: {
-                                backgroundColor: '#333',
-                                color: 'silver'
-                            },
-
-                            labelStyle: {
-                                color: 'silver'
-                            }
-                        },
-
-                        navigator: {
-                            handles: {
-                                backgroundColor: '#666',
-                                borderColor: '#AAA'
-                            },
-                            outlineColor: '#CCC',
-                            maskFill: 'rgba(255,255,255,0.1)',
-                            series: {
-                                color: '#7798BF',
-                                lineColor: '#A6C7ED'
-                            },
-                            xAxis: {
-                                gridLineColor: '#505053'
-                            }
-                        },
-
-                        scrollbar: {
-                            barBackgroundColor: '#808083',
-                            barBorderColor: '#808083',
-                            buttonArrowColor: '#CCC',
-                            buttonBackgroundColor: '#606063',
-                            buttonBorderColor: '#606063',
-                            rifleColor: '#FFF',
-                            trackBackgroundColor: '#404043',
-                            trackBorderColor: '#404043'
-                        },
-
-                        legend: {
-                            enabled: false
-                        },
-
-                        credits: {
-                            enabled: false
-                        },
-
-                        exporting: {
-                            enabled: false
-                        },
-
-                        // special colors for some of the
-                        legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        background2: '#505053',
-                        dataLabelsColor: '#B0B0B3',
-                        textColor: '#C0C0C0',
-                        contrastTextColor: '#F0F0F3',
-                        maskColor: 'rgba(255,255,255,0.3)'
-                    };
-
-
+                            });
                 }
             });
     </script>

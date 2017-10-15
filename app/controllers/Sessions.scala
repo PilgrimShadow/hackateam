@@ -94,7 +94,7 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
         goodForm => {
 
           // Check the subject name
-          if (subjectNameRegex.findFirstIn(goodForm.subject).isEmpty) {
+          if (subjectNameRegex.findFirstIn(goodForm.name).isEmpty) {
             Future(Ok(ResultInfo.failWithMessage("Unacceptable subject name").toJson))
           }
           else if (descriptionRegex.findFirstIn(goodForm.description).isEmpty) {
@@ -105,7 +105,7 @@ class Sessions @Inject()(val reactiveMongoApi: ReactiveMongoApi)
             // Remove excess whitespace from the subject description
             val cleanedDescription = withoutExcessWhitespace(goodForm.description)
 
-            sessions.addSubject(username, goodForm.subject, cleanedDescription).map(resultInfo => Ok(resultInfo.toJson))
+            sessions.addSubject(username, goodForm.name, cleanedDescription).map(resultInfo => Ok(resultInfo.toJson))
           }
         }
       )
