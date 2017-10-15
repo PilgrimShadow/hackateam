@@ -40,6 +40,14 @@ function TeamList(elementId, teams, username = "") {
             teamname.classList.add("search-result-title");
             teamname.innerHTML = '<span>' + team['name'] + '</span><a class="team-repo-link" href="' + team['repoLink'] + '" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>';
 
+            let memberList = document.createElement('div');
+            memberList.classList.add('team-member-list');
+            memberList.innerHTML = team['members'].filter((member) => {
+                return member !== this.username.toLowerCase();
+            }).map((member) => {
+                return '<span class="team-member-list-item">' + member + '</span>';
+            }).join("");
+
             let hackathon = document.createElement('div');
             hackathon.classList.add('search-result-hackathon');
             hackathon.textContent = team['hackathon'];
@@ -160,6 +168,7 @@ function TeamList(elementId, teams, username = "") {
             let top = document.createElement('div');
             top.append(teamname);
             top.append(hackathon);
+            top.append(memberList);
             top.append(about);
 
             let messaging = document.createElement('div');

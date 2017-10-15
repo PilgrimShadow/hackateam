@@ -59,6 +59,10 @@
     padding-bottom: 20px;
 }
 
+.team-member-list-item {
+    margin-right: 5px;
+}
+
 .team-message-text {
     margin-left: 5px;
 }
